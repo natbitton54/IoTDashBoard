@@ -7,9 +7,9 @@ app = Flask(__name__, template_folder="src/Views", static_folder="src")
 GPIO.cleanup()
 
 # GPIO Configuration
-LED_PIN = 18
+LED = 18
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(LED_PIN, GPIO.OUT)
+GPIO.setup(LED, GPIO.OUT)
 
 # led state like lab 2 task 2 to keep light turned on til button is pressed again
 led_state = False
@@ -39,7 +39,7 @@ def switch_on():
        return jsonify({'error': 'Invalid state. Use "ON" or "OFF".'}), 400
 
    led_state = (state == 'ON')
-   GPIO.output(LED_PIN, led_state)
+   GPIO.output(LED, led_state)
 
    return jsonify({'message': f'LED switched {state}', 'state': state})
 
@@ -53,4 +53,4 @@ if __name__ == '__main__':
    try:
        app.run(host='0.0.0.0', port=5000, debug=True)
    except KeyboardInterrupt:
-       GPIO.cleanup()  # Cleanup GPIO on exit
+       GPIO.cleanup()
