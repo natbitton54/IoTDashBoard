@@ -197,10 +197,25 @@ canvas {
     scale: 1.6;
 }
 
-/* Toggle Buttons */
-#fanToggleBtn {
-    margin-top: 28px;
+.fan-status{
+    padding: 0 40px;
+}
+
+.status {
+    margin-top: 30px;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: bold;
     color: var(--btn-text);
+    background-color: var(--btn-bg);
+    border: none;
+    border-radius: 8px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.status:hover {
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-text);
 }
 
 .btn {
@@ -216,17 +231,6 @@ canvas {
     transition: background 0.3s, transform 0.2s, color 0.3s;
 }
 
-.btn:hover {
-    background: var(--btn-hover-bg);
-    color: var(--btn-hover-text);
-    transform: scale(1.05);
-}
-
-#fanToggleBtn:hover {
-    background: var(--btn-hover-bg);
-    color: var(--btn-hover-text);
-    transform: scale(1.05);
-}
 
 @media (max-width: 768px) {
     .content {
