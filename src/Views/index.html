@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="../CSS/light-switch.css">
+    <link rel="stylesheet" href="../CSS/styles.css">
     <title>IoT Smart Home Dashboard</title>
 </head>
 
@@ -26,6 +26,9 @@
             <li><a href="#">Devices</a></li>
             <li><a href="#">Settings</a></li>
             <li><a href="#">Account</a></li>
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="themeToggleBtn" class="btn">Toggle Light Mode</button>
+        </div>
         </ul>
     </div>
 
@@ -35,16 +38,21 @@
             <h1>IoT Smart Home Dashboard</h1>
         </div>
 
-        <!-- Controls inside the Container its centered for now since theres only one, it will be 5 or 4 for x amount of rows depending on how many controls-->
         <div class="container">
             <div class="light-control">
                 <canvas id="lightCanvas" width="180" height="300"></canvas>
                 <button id="toggleBtn" class="btn">Turn On</button>
             </div>
+
+            <div class="fan-control">
+                <img id="fanGif" src="./src/images/fan-static.gif" alt="Fan Animation" style="width: 200px; height: auto;">
+                <button id="fanToggleBtn" class="btn">Turn On</button>
+            </div>
         </div>
     </div>
 
     <script src="../Scripts/lightSwitch.js"></script>
+    <script src="../Scripts/fanControl.js"></script>
+    <script src="../Scripts/theme.js"></script>
 </body>
-
 </html>
