@@ -3,36 +3,51 @@ const ctx = canvas.getContext('2d');
 const toggleBtn = document.getElementById('toggleBtn');
 let isOn = false;
 
+const centerX = canvas.width / 2; 
+const centerY = canvas.height / 2 - 30; 
+const bulbRadius = 50;
+
 
 // Function to draw the light bulb
 function drawBulb(isOn) {
-   ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    if (isOn) {
+        let glow = ctx.createRadialGradient(centerX, centerY, 10, centerX, centerY, 80);
+        glow.addColorStop(0, 'rgba(255, 255, 150, 0.8)');
+        glow.addColorStop(1, 'rgba(255, 255, 0, 0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
 
-   ctx.beginPath();
-   ctx.arc(100, 100, 50, 0, Math.PI * 2);
-   ctx.closePath();
+    // Draw the lightbulb
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, bulbRadius, 0, Math.PI * 2);
+    ctx.fillStyle = isOn ? "yellow" : "#ccc";
+    ctx.fill();
+    ctx.strokeStyle = '#999';
+    ctx.lineWidth = 3;
+    ctx.stroke();
 
+    // Filament glow
+    if (isOn) {
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 20, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255, 255, 200, 0.6)";
+        ctx.fill();
+    }
 
-   if (isOn) {
-       // Glowing effect using a radial gradient
-       let gradient = ctx.createRadialGradient(100, 100, 10, 100, 100, 50);
-       gradient.addColorStop(0, 'yellow');
-       gradient.addColorStop(1, 'rgba(255, 255, 0, 0)');
-       ctx.fillStyle = gradient;
-   } else {
-       ctx.fillStyle = '#ccc';
-   }
-   ctx.fill();
-   ctx.strokeStyle = '#999';
-   ctx.stroke();
+    // Draw the base centered
+    const baseWidth = 40;
+    const baseHeight = 50;
+    const baseX = centerX - baseWidth / 2;
+    const baseY = centerY + bulbRadius;
 
-
-   ctx.beginPath();
-   ctx.rect(80, 150, 40, 50);
-   ctx.fillStyle = '#666';
-   ctx.fill();
-   ctx.stroke();
+    ctx.beginPath();
+    ctx.rect(baseX, baseY, baseWidth, baseHeight);
+    ctx.fillStyle = '#666';
+    ctx.fill();
+    ctx.stroke();
 }
 
 // Function to update UI based on LED status from Flask
