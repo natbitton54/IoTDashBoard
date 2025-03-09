@@ -5,12 +5,11 @@
 }
 
 :root {
-    /* Default Dark Theme */
     --bg-color: #0a192f;
     --text-color: #ccd6f6;
     --sidebar-bg: linear-gradient(180deg, #112240, #0a192f);
     --control-bg: #112240;
-    --border-color: #ffffff;
+    --border-color: transparent;
     --btn-bg: #060d1a;
     --btn-hover-bg: linear-gradient(90deg, #233554, #112240);
     --btn-hover-text: #64ffda;
@@ -24,12 +23,11 @@
 }
 
 .light-mode {
-    /* Light Theme */
     --bg-color: #f0f2f5;
     --text-color: #333333;
     --sidebar-bg: linear-gradient(180deg, #e0e0e0, #f0f2f5);
     --control-bg: #ffffff;
-    --border-color: #cccccc;
+    --border-color: transparent;
     --btn-bg: #000;
     --btn-hover-bg: linear-gradient(90deg, #d3d3d3, #ffffff);
     --btn-hover-text: #0066cc;
@@ -39,6 +37,7 @@
     --pfp-bg-icon: #fff;
     --link-hover-color: #0066cc;
     --canvas-bg: #f0f2f5;
+    --btn-text: #fff;
 }
 
 body {
@@ -109,18 +108,13 @@ body {
     padding: 12px 0;
     text-align: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.sidebar ul li {
     color: var(--text-color);
-    text-decoration: none;
     font-weight: 500;
-    transition: color 0.3s;
-    cursor: pointer;
 }
 
 .sidebar ul li:hover {
     color: var(--link-hover-color);
+    cursor: default;
 }
 
 /* Main Content */
@@ -147,63 +141,107 @@ body {
     align-items: center;
 }
 
-/* Container */
-.container {
+/* Main Container */
+.main-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 50px;
-    justify-content: flex-start;
-    width: 100%;
-    margin-top: 20px;
+    height: calc(100vh - 100px);
+    gap: 20px;
 }
 
-/* Light Control and Fan Control */
-.light-control,
-.fan-control {
+.main-view {
+    flex: 3;
     background-color: var(--control-bg);
     border-radius: 12px;
-    width: 100%;
-    height: 100%;
+    padding: 20px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    color: var(--text-color);
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.sensor-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.control-panel {
+    flex: 1;
+    background-color: var(--control-bg);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Control Cards */
+.light-control,
+.fan-control,
+.temp-control,
+.humidity-control,
+.phone-control {
+    background-color: var(--control-bg);
+    border-radius: 12px;
     padding: 20px;
     text-align: center;
     box-shadow: 0 4px 8px var(--shadow-color);
-    max-width: 280px;
-    border: 2px solid var(--border-color);
-    align-self: flex-start;
     color: var(--text-color);
+    height: 100%;
+}
+
+.light-control {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 400px;
+}
+
+.light-control canvas {
+    margin-bottom: 20px;
+    min-height: 300px;
+    margin: auto;
+}
+
+.phone-control {
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 canvas {
-    background-color: var(--canvas-bg);
-    padding-right: 27px;
-    padding-left: 23px;
     border-radius: 12px;
 }
 
 .bg-image {
-    background-color: var(--canvas-bg);
-    padding-right: 27px;
-    padding-left: 23px;
+    background-color: var(--control-bg);
+    padding: 20px;
     border-radius: 12px;
-    padding-top: 20px;
-    padding-bottom: 24px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Fan GIF */
 #fanGif {
     border-radius: 10px;
     transition: opacity 0.5s;
-    margin-top: 50px;
-    scale: 1.6;
+    margin-top: 10px;
+    scale: 2;
+    margin-bottom: 10px;
 }
 
-.fan-status{
-    padding: 0 40px;
-}
 
 .status {
-    margin-top: 30px;
-    padding: 12px 0;
+    margin-top: 20px;
+    padding: 10px 0;
     font-size: 16px;
     font-weight: bold;
     color: var(--btn-text);
@@ -211,6 +249,9 @@ canvas {
     border: none;
     border-radius: 8px;
     transition: background 0.3s, color 0.3s;
+    cursor: default;
+    width: 200px;
+    margin: auto;
 }
 
 .status:hover {
@@ -219,9 +260,9 @@ canvas {
 }
 
 .btn {
-    margin-top: 20px;
-    padding: 12px 24px;
-    font-size: 16px;
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 14px;
     font-weight: bold;
     color: var(--btn-text);
     background-color: var(--btn-bg);
@@ -231,15 +272,35 @@ canvas {
     transition: background 0.3s, transform 0.2s, color 0.3s;
 }
 
+.btn:hover {
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-text);
+    transform: scale(1.05);
+}
 
 @media (max-width: 768px) {
     .content {
         margin-left: 0;
         width: 100%;
-        flex-direction: column;
     }
 
     .sidebar {
         width: 220px;
+    }
+
+    .main-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .main-view,
+    .control-panel {
+        flex: auto;
+        min-height: 200px;
+    }
+
+    .sensor-container {
+        flex-direction: column;
+        align-items: center;
     }
 }

@@ -23,9 +23,9 @@
         <h2>IoT Dashboard</h2>
         <ul>
             <li>Favourites</li>
-            <li>Temperture: <span></span></li>
-            <li>Humidity: <span></span></li>
-            <li>Light Intensity: <span></span></li>
+            <li>Temperature: <span id="temperature"></span></li>
+            <li>Humidity: <span id="humidity"></span></li>
+            <li>Light Intensity: <span id="lightIntensity"></span></li>
             <div style="text-align: center; margin-top: 20px;">
                 <button id="themeToggleBtn" class="btn">Toggle Light Mode</button>
             </div>
@@ -38,20 +38,48 @@
             <h1>IoT Smart Home Dashboard</h1>
         </div>
 
-        <div class="container">
-            <div class="light-control">
-                <canvas id="lightCanvas" width="180" height="300"></canvas>
-                <button id="toggleBtn" class="btn">Turn On</button>
-            </div>
+        <div class="main-container">
+            <!-- Left Section (Temperature, Humidity, and Fan) -->
+            <div class="main-view">
+                <div class="sensor-container">
+                    <!-- Temperature Card -->
+                    <div class="temp-control">
+                        <div class="bg-image">
+                        </div>
+                        <p>Temperature: <span id="tempValue"></span>°C</p>
+                    </div>
 
-            <div class="fan-control">
+                    <!-- Humidity Card -->
+                    <div class="humidity-control">
+                        <div class="bg-image">
+                        </div>
+                        <p>Humidity: <span id="humValue"></span>%</p>
+                    </div>
+
+                    <!-- Fan Control Card -->
+                    <div class="fan-control">
+                        <div class="bg-image">
+                            <img id="fanGif" src="../src/images/fan-static.gif" alt="Fan Animation"
+                                style="width: 150px; height: auto;">
+                        </div>
+                        <div class="fan-status">
+                            <p class="status">Fan Status: <span id="fanStatus">OFF</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- right side lighting and Smart occupancy system -->
+            <div class="control-panel">
+                <div class="light-control">
+                    <canvas id="lightCanvas" width="180" height="300"></canvas>
+                    <button id="toggleBtn" class="btn">Turn On</button>
+                </div>
+
+            <div class="phone-control">
                 <div class="bg-image">
-                    <img id="fanGif" src="./src/images/fan-static.gif" alt="Fan Animation"
-                        style="width: 200px; height: auto;">
                 </div>
-                <div class="fan-status">
-                    <p class="status">Fan Status: <span id="fanStatus">OFF</span></p>
-                </div>
+                <p>Smart occupancy system</p>
+            </div>
             </div>
         </div>
     </div>
