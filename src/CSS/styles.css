@@ -111,14 +111,15 @@ body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.sidebar ul li a {
+.sidebar ul li {
     color: var(--text-color);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s;
+    cursor: pointer;
 }
 
-.sidebar ul li a:hover {
+.sidebar ul li:hover {
     color: var(--link-hover-color);
 }
 
@@ -153,6 +154,7 @@ body {
     gap: 50px;
     justify-content: flex-start;
     width: 100%;
+    margin-top: 20px;
 }
 
 /* Light Control and Fan Control */
@@ -178,6 +180,15 @@ canvas {
     border-radius: 12px;
 }
 
+.bg-image {
+    background-color: var(--canvas-bg);
+    padding-right: 27px;
+    padding-left: 23px;
+    border-radius: 12px;
+    padding-top: 20px;
+    padding-bottom: 24px;
+}
+
 /* Fan GIF */
 #fanGif {
     border-radius: 10px;
@@ -188,7 +199,7 @@ canvas {
 
 /* Toggle Buttons */
 #fanToggleBtn {
-    margin-top: 70px;
+    margin-top: 28px;
     color: var(--btn-text);
 }
 
@@ -206,6 +217,12 @@ canvas {
 }
 
 .btn:hover {
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-text);
+    transform: scale(1.05);
+}
+
+#fanToggleBtn:hover {
     background: var(--btn-hover-bg);
     color: var(--btn-hover-text);
     transform: scale(1.05);

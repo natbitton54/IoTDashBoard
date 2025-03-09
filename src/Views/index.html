@@ -20,15 +20,15 @@
             </div>
             <div class="username">Username</div>
         </div>
-        <h2>Dashboard</h2>
+        <h2>IoT Dashboard</h2>
         <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Devices</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Account</a></li>
-        <div style="text-align: center; margin-top: 20px;">
-            <button id="themeToggleBtn" class="btn">Toggle Light Mode</button>
-        </div>
+            <li>Favourites</li>
+            <li>Temperture: <span></span></li>
+            <li>Humidity: <span></span></li>
+            <li>Light Intensity: <span></span></li>
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="themeToggleBtn" class="btn">Toggle Light Mode</button>
+            </div>
         </ul>
     </div>
 
@@ -45,7 +45,10 @@
             </div>
 
             <div class="fan-control">
-                <img id="fanGif" src="./src/images/fan-static.gif" alt="Fan Animation" style="width: 200px; height: auto;">
+                <div class="bg-image">
+                    <img id="fanGif" src="./src/images/fan-static.gif" alt="Fan Animation"
+                        style="width: 200px; height: auto;">
+                </div>
                 <button id="fanToggleBtn" class="btn">Turn On</button>
             </div>
         </div>
@@ -55,4 +58,5 @@
     <script src="../Scripts/fanControl.js"></script>
     <script src="../Scripts/theme.js"></script>
 </body>
+
 </html>
