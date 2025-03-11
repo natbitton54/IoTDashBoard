@@ -43,12 +43,16 @@
             <div class="main-view">
                 <div class="sensor-container">
                     <!-- Temperature Card -->
-                    <div class="temp-control">
-                        <div class="bg-image">
+                    <div class="thermostat">
+                        <div class="dial-container">
+                            <div class="dial">
+                                <div class="temperature" id="tempDisplay">22°C</div>
+                            </div>
                         </div>
-                        <p>Temperature: <span id="tempValue"></span>°C</p>
                     </div>
-
+                    
+                    
+                    
                     <!-- Humidity Card -->
                     <div class="humidity-control">
                         <div class="bg-image">
@@ -83,7 +87,7 @@
             </div>
         </div>
     </div>
-
+    <script src="../Scripts/temperature.js"></script>
     <script src="../Scripts/lightSwitch.js"></script>
     <script src="../Scripts/fanControl.js"></script>
     <script src="../Scripts/theme.js"></script>

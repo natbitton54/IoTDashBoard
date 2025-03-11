@@ -277,6 +277,59 @@ canvas {
     color: var(--btn-hover-text);
     transform: scale(1.05);
 }
+.thermostat {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+}
+
+.dial-container {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: #e1e4e8;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.dial {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: #fff;
+    border: 10px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+.temperature {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+    position: absolute;
+    z-index: 10;
+}
+
+input[type="range"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+    opacity: 0;
+}
 
 @media (max-width: 768px) {
     .content {
