@@ -7,37 +7,51 @@
 :root {
     --bg-color: #0a192f;
     --text-color: #ccd6f6;
+    --text-color-gauge: #fff;
     --sidebar-bg: linear-gradient(180deg, #112240, #0a192f);
     --control-bg: #112240;
+    --control-bg-guage: #000;
     --border-color: transparent;
     --btn-bg: #060d1a;
     --btn-hover-bg: linear-gradient(90deg, #233554, #112240);
     --btn-hover-text: #64ffda;
     --header-bg: linear-gradient(90deg, #233554, #112240);
     --shadow-color: rgba(0, 0, 0, 0.3);
+    --shadow-color-gauge:
+        inset 6px 6px 12px rgba(0, 0, 0, 0.8),
+        inset -6px -6px 12px rgba(50, 50, 50, 0.2),
+        0 8px 20px rgba(0, 0, 0, 0.7),
+        0 4px 8px rgba(255, 255, 255, 0.05);
     --pfp-bg: #233554;
     --pfp-bg-icon: #ccd6f6;
     --link-hover-color: #64ffda;
     --canvas-bg: #0a192f;
     --btn-text: #eee;
+    --gauge-bg: radial-gradient(circle, #000000 40%, #0a0a0a 60%, #1a1a1a 100%);
+    --gauge-border: #fff;
 }
 
 .light-mode {
     --bg-color: #f0f2f5;
     --text-color: #333333;
+    --text-color-gauge: 333333;
     --sidebar-bg: linear-gradient(180deg, #e0e0e0, #f0f2f5);
     --control-bg: #ffffff;
+    --control-bg-guage: #ffffff;
     --border-color: transparent;
     --btn-bg: #000;
     --btn-hover-bg: linear-gradient(90deg, #d3d3d3, #ffffff);
     --btn-hover-text: #0066cc;
     --header-bg: linear-gradient(90deg, #d3d3d3, #e0e0e0);
     --shadow-color: rgba(0, 0, 0, 0.1);
+    --shadow-color-gauge: rgba(0, 0, 0, 0.1);
     --pfp-bg: #000;
     --pfp-bg-icon: #fff;
     --link-hover-color: #0066cc;
     --canvas-bg: #f0f2f5;
     --btn-text: #fff;
+    --gauge-bg: #e1e4e8;
+    --gauge-border: #d2d2d2dd;
 }
 
 body {
@@ -152,7 +166,7 @@ body {
     flex: 3;
     background-color: var(--control-bg);
     border-radius: 12px;
-    padding: 20px;
+    padding: 14px;
     box-shadow: 0 4px 8px var(--shadow-color);
     color: var(--text-color);
     min-height: 400px;
@@ -164,7 +178,7 @@ body {
 .sensor-container {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 15px;
 }
 
 .control-panel {
@@ -217,13 +231,13 @@ body {
 
 canvas {
     border-radius: 12px;
+    scale: 1.2;
 }
 
 .bg-image {
     background-color: var(--control-bg);
     padding: 20px;
     border-radius: 12px;
-    margin-bottom: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -233,14 +247,11 @@ canvas {
 #fanGif {
     border-radius: 10px;
     transition: opacity 0.5s;
-    margin-top: 10px;
-    scale: 2;
-    margin-bottom: 10px;
+    scale: 1.9;
 }
 
 
 .status {
-    margin-top: 20px;
     padding: 10px 0;
     font-size: 16px;
     font-weight: bold;
@@ -277,59 +288,19 @@ canvas {
     color: var(--btn-hover-text);
     transform: scale(1.05);
 }
-.thermostat {
+
+.humidity-fill-line {
+    stroke: var(--link-hover-color) !important;
+    stroke-opacity: 1;
+    transition: stroke-dashoffset 1s ease-in-out;
+}
+
+.section-header{
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    position: relative;
+    justify-content: start;
+    color: var(--text-color);
 }
 
-.dial-container {
-    position: relative;
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    background: #e1e4e8;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-}
-
-.dial {
-    position: absolute;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: #fff;
-    border: 10px solid #ddd;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.2s ease-in-out;
-}
-
-.temperature {
-    font-size: 36px;
-    font-weight: bold;
-    color: #333;
-    position: absolute;
-    z-index: 10;
-}
-
-input[type="range"] {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    -webkit-appearance: none;
-    appearance: none;
-    opacity: 0;
-}
 
 @media (max-width: 768px) {
     .content {
