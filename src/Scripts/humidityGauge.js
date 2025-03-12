@@ -24,9 +24,22 @@ document.addEventListener('DOMContentLoaded', () => {
         humidityDisplay.textContent = `${clampedHumidity.toFixed(1)}%`;
     }
 
-    // Simulation 
-    setInterval(() => {
-        const newHumidity = Math.random() * 100 - 50;
-        updateHumidityGauge(newHumidity);
-    }, 5000);
+    function fetchHumidity() {
+        fetch('/humidity')  
+            .then(response => response.json())
+            .then(data => {
+                if (data.humidity) {
+                    updateHumidityGauge(data.humidity);
+                } else {
+                    console.error('Failed to fetch humidity.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching humidity:', error);
+            });
+    }
+
+    // Fetch humidity every 3 seconds
+    setInterval(fetchHumidity, 3000);
+    
 });

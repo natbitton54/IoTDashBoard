@@ -39,25 +39,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function updateGauge(temp) {
-        // Map temperature (-50 to 50) to percentage (0 to 1)
-        const percentage = (temp - minTemp) / (maxTemp - minTemp);
-        const fillPercentage = percentage; 
+function fetchTemperature() {
+    fetch('/temperature')  
+        .then(response => response.json())
+        .then(data => {
+            if (data.temperature) {
+                currentTemp = data.temperature; 
+                updateGauge(currentTemp);
+            } else {
+                console.error('Failed to fetch temperature.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching temperature:', error);
+        });
+}
 
-        // Update the CSS variable for SVG fill
-        document.documentElement.style.setProperty('--fill-percentage', `${fillPercentage}`);
+// Update the temperature gauge
+function updateGauge(temp) {
+    const percentage = (temp - minTemp) / (maxTemp - minTemp);
+    const fillPercentage = percentage;
+    document.documentElement.style.setProperty('--fill-percentage', `${fillPercentage}`);
+    tempDisplay.textContent = `${temp.toFixed(1)}°C`;
+}
 
-        // Update temperature display
-        tempDisplay.textContent = `${temp.toFixed(1)}°C`;
-    }
+updateGauge(currentTemp);
 
-    // Initial update
-    updateGauge(currentTemp);
-
-   // simulation
-    setInterval(() => {
-        const newTemp = Math.round(Math.random() * 100 - 50);
-        currentTemp = newTemp;
-        updateGauge(currentTemp);
-    }, 5000);
+// Fetch temperature every 3 seconds
+setInterval(fetchTemperature, 3000);
 });
