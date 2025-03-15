@@ -12,7 +12,9 @@ IMAP_PORT = 993
 
 EMAIL_ACCOUNT = "smartdashboard60@gmail.com"
 EMAIL_PASSWORD = "koyu oxxd rdvj hxzl"
-RECIPIENT = "kamreez80@gmail.com"
+RECIPIENT = "wayned0527@gmail.com"
+
+fan_state = False
 
 # sending email function
 def send_email(TEMP):
@@ -45,7 +47,7 @@ def check_response(FAN):
         email_ids = messages[0].split()
 
         if not email_ids:
-            print("No new emails.")
+            print(f"No new emails. Fan is {'ON' if fan_state else 'OFF'}.")
             return fan_state
 
         for e_id in email_ids:

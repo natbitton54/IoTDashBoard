@@ -9,6 +9,9 @@ import time
 app = Flask(__name__, template_folder="src/Views", static_folder="src")
 
 # GPIO Configuration
+GPIO.cleanup()
+time.sleep(0.5)
+GPIO.setwarnings(False)
 LED = 18
 FAN = 22
 GPIO.setmode(GPIO.BCM)
@@ -84,7 +87,9 @@ def humidity():
 def email_checker():
     global fan_state
     while True:
-        fan_state = check_response(FAN)
+        new_fan_state = check_response(FAN)
+        if new_fan_state is not None:
+            fan_state = new_fan_state
         time.sleep(15)
 
 # run flask server
