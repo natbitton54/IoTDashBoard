@@ -1,7 +1,7 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify # use jsonify for returning messages because we are using javascript on our project
 from sensors.dht11F import get_humidity, get_temperature
 from emails.emailing import send_email, check_response
-import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO # type: ignore
 import threading
 import time
 

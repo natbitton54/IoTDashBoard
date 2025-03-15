@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO # type: ignore
 import smtplib # try doing sudo apt install python3-smtplib / or python3-secure-smtplib
 import imaplib # try doing sudo apt install python3-imaplib
 import email
