@@ -1,20 +1,25 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify # use jsonify for returning messages because we are using javascript on our project
+from sensors.dht11F import get_humidity, get_temperature
+from emails.emailing import send_email, check_response
 import RPi.GPIO as GPIO
-from sensors.dht11F import get_temperature, get_humidity
-
+import threading
+import time
 
 # initialize flask app
 app = Flask(__name__, template_folder="src/Views", static_folder="src")
 
-GPIO.cleanup()
-
 # GPIO Configuration
 LED = 18
+FAN = 22
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED, GPIO.OUT)
+GPIO.setup(FAN, GPIO.OUT)
+GPIO.output(FAN, GPIO.LOW)
 
 # led state like lab 2 task 2 to keep light turned on til button is pressed again
+# fan state for updating the status of the fan
 led_state = False
+fan_state = False
 
 # get html file
 @app.route('/')
@@ -50,11 +55,19 @@ def switch_on():
 def get_led_status():
    return jsonify({'state': 'ON' if led_state else 'OFF'})
 
+# API endpoint to get Fan status
+@app.route('/fan-status', methods=['GET'])
+def get_fan_status():
+    global fan_state
+    return jsonify({'state': 'ON' if fan_state else 'OFF'})
+
 # API endpoints for temperature and humidity
 @app.route('/temperature', methods=['GET'])
 def temperature():
     temp = get_temperature()
     if temp is not None:
+        if temp > 24:
+            send_email(temp)
         return jsonify({'temperature': temp})
     else:
         return jsonify({'error': 'Failed to read temperature.'}), 500
@@ -66,10 +79,18 @@ def humidity():
         return jsonify({'humidity': humidity})
     else:
         return jsonify({'error': 'Failed to read humidity.'}), 500
+    
+# helper function
+def email_checker():
+    global fan_state
+    while True:
+        fan_state = check_response(FAN)
+        time.sleep(15)
 
 # run flask server
 if __name__ == '__main__':
    try:
+       threading.Thread(target=email_checker, daemon=True).start()
        app.run(host='0.0.0.0', port=5000, debug=True)
    except KeyboardInterrupt:
        GPIO.cleanup()
