@@ -1,5 +1,7 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify # use jsonify for returning messages because we are using javascript on our project
 import RPi.GPIO as GPIO
+from sensors.dht11F import get_temperature, get_humidity
+
 
 # initialize flask app
 app = Flask(__name__, template_folder="src/Views", static_folder="src")
@@ -47,6 +49,23 @@ def switch_on():
 @app.route('/status', methods=['GET'])
 def get_led_status():
    return jsonify({'state': 'ON' if led_state else 'OFF'})
+
+# API endpoints for temperature and humidity
+@app.route('/temperature', methods=['GET'])
+def temperature():
+    temp = get_temperature()
+    if temp is not None:
+        return jsonify({'temperature': temp})
+    else:
+        return jsonify({'error': 'Failed to read temperature.'}), 500
+
+@app.route('/humidity', methods=['GET'])
+def humidity():
+    humidity = get_humidity()
+    if humidity is not None:
+        return jsonify({'humidity': humidity})
+    else:
+        return jsonify({'error': 'Failed to read humidity.'}), 500
 
 # run flask server
 if __name__ == '__main__':
