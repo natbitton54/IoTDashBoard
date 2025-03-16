@@ -84,6 +84,11 @@ def humidity():
         return jsonify({'error': 'Failed to read humidity.'}), 500
     
 # helper function
+def update_fan_state(new_state):
+   global fan_state
+   fan_state = new_state
+   print(f"Fan is: {'ON' if fan_state else 'OFF'}")
+
 def email_checker():
     global fan_state
     while True:

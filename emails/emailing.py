@@ -47,8 +47,8 @@ def check_response(FAN):
         email_ids = messages[0].split()
 
         if not email_ids:
-            print(f"No new emails. Fan is {'ON' if fan_state else 'OFF'}.")
-            return fan_state
+            print("No new emails.")
+            return None
 
         for e_id in email_ids:
             status, message_data = mail.fetch(e_id, "(RFC822)")
@@ -74,15 +74,17 @@ def check_response(FAN):
                     # this is the fan status based on response of the user
                     if "YES" in body:
                         GPIO.output(FAN, GPIO.HIGH)
-                        fan_state = True
-                        print("Fan turned ON.")
+                        print("Fan turned ON (emailing.py).")
+                        mail.logout()
+                        return True
                     elif "NO" in body:
                         GPIO.output(FAN, GPIO.LOW)
-                        fan_state = False
-                        print("Fan stays OFF. Nothing happens.")
+                        print("Fan turned OFF (emailing.py).")
+                        mail.logout()
+                        return False
         mail.logout()
-        return fan_state
+        return None
     
     except Exception as e:
         print(f"Error Receiving Emails: {e}")
-        return fan_state
+        return None

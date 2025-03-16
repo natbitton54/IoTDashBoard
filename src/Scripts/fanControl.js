@@ -32,5 +32,5 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch((error) => console.error("Error fetching fan status:", error));
   }
   fetchFanStatus();
-  setInterval(fetchFanStatus, 5000)
+  setInterval(fetchFanStatus, 5000);
 });
