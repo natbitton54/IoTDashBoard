@@ -27,9 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("/fan-status")
       .then((response) => response.json())
       .then((data) => {
-        updateFanState(data.state);
+        updateFanState(data.state === "ON");
       })
       .catch((error) => console.error("Error fetching fan status:", error));
   }
   fetchFanStatus();
+  setInterval(fetchFanStatus, 5000)
 });
