@@ -101,6 +101,6 @@ def email_checker():
 if __name__ == '__main__':
    try:
        threading.Thread(target=email_checker, daemon=True).start()
-       app.run(host='0.0.0.0', port=5000, debug=True)
+       app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
    except KeyboardInterrupt:
        GPIO.cleanup()
