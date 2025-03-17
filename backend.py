@@ -1,6 +1,7 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify # use jsonify for returning messages because we are using javascript on our project
 from sensors.dht11F import get_humidity, get_temperature
 from emails.emailing import send_email, check_response
+from motors.motor import setup_motor, run_motor
 import RPi.GPIO as GPIO # type: ignore
 import threading
 import time
@@ -13,11 +14,10 @@ GPIO.cleanup()
 time.sleep(0.5)
 GPIO.setwarnings(False)
 LED = 18
-FAN = 22
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED, GPIO.OUT)
-GPIO.setup(FAN, GPIO.OUT)
-GPIO.output(FAN, GPIO.LOW)
+setup_motor()
+
 
 # led state like lab 2 task 2 to keep light turned on til button is pressed again
 # fan state for updating the status of the fan
@@ -69,7 +69,7 @@ def get_fan_status():
 def temperature():
     temp = get_temperature()
     if temp is not None:
-        if temp > 24:
+        if temp > 22:
             send_email(temp)
         return jsonify({'temperature': temp})
     else:
@@ -88,14 +88,18 @@ def update_fan_state(new_state):
    global fan_state
    fan_state = new_state
    print(f"Fan is: {'ON' if fan_state else 'OFF'}")
+   if new_state:
+       run_motor("RIGHT")
+   else:
+       run_motor("STOP")
 
 def email_checker():
     global fan_state
     while True:
-        new_fan_state = check_response(FAN)
+        new_fan_state = check_response()
         if new_fan_state is not None:
-            fan_state = new_fan_state
-        time.sleep(15)
+            update_fan_state(new_fan_state) 
+        time.sleep(5)
 
 # run flask server
 if __name__ == '__main__':

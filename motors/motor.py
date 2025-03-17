@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO #type: ignore
 
 MOTOR_IN1 = 27
-MOTOR_IN2 = 17
+MOTOR_IN2 = 13
 MOTOR_ENABLE = 22
 
 # setup
