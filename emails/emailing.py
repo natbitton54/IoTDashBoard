@@ -25,17 +25,14 @@ def send_email(TEMP):
     # message.set_content(f"The current temperature is {TEMP}°C. Would you like to turn the fan on?\n\n"
     #                     f"Please reply with 'YES' or 'NO'.")
     
-    html_content = f"""
-<!DOCTYPE html>
-<html lang="en">
 
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-        integrity="sha512-...your-integrity-hash..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>O'Block Automated Alerts</title>
-    <style type="text/css">
+    <style>
         :root {{
             --bg-color: #0a192f;
             --btn-bg: #000;
@@ -43,7 +40,7 @@ def send_email(TEMP):
             --btn-hover-text: #64ffda;
             --btn-text: #eee;
         }}
-
+        
         body,
         table,
         td,
@@ -68,7 +65,6 @@ def send_email(TEMP):
             text-decoration: none;
         }}
 
-        /* Container */
         .container {{
             width: 100%;
             max-width: 600px;
@@ -80,13 +76,12 @@ def send_email(TEMP):
             margin-top: 20px;
         }}
 
-        /* Content */
         .content {{
             padding: 20px;
             text-align: center;
         }}
 
-        .content .warning-banner {{
+        .warning-banner {{
             background-color: #000;
             color: #fff;
             padding: 12px;
@@ -95,7 +90,7 @@ def send_email(TEMP):
             margin-bottom: 15px;
         }}
 
-        .content .warning-banner i {{
+        .warning-banner i {{
             margin-right: 8px;
             margin-left: 8px;
             font-size: 18px;
@@ -109,12 +104,11 @@ def send_email(TEMP):
             color: #d3d3d3;
         }}
 
-        .content .temp-value {{
+        .temp-value {{
             font-size: 17px;
             color: #ff4757;
         }}
 
-        /* Button */
         .action-button {{
             margin-top: 15px;
             padding: 10px 24px;
@@ -138,12 +132,19 @@ def send_email(TEMP):
             text-decoration: line-through;
         }}
 
-        /* Responsive Design */
+        .automated {{
+            font-size: 10.5px;
+            display: flex;
+            justify-content: end;
+            color: rgb(122, 120, 122);
+            font-style: italic;
+            font-weight: bold;
+        }}
+
         @media only screen and (max-width: 600px) {{
             .container {{
                 width: 100% !important;
             }}
-
             .action-button {{
                 display: block;
                 margin: 10px auto;
@@ -152,24 +153,33 @@ def send_email(TEMP):
         }}
     </style>
 </head>
-
 <body>
     <table class="container" cellpadding="0" cellspacing="0" border="0">
         <tr>
             <td class="content">
                 <div class="warning-banner">
-                    &#9888; Alert: Elevated Temperature Detected &#9888;
+                    <span style="color: yellow;">&#9888; &nbsp;</span>
+                    Alert: Elevated Temperature Detected
+                    &nbsp;<span style="color: yellow;">&#9888;</span>
                 </div>
-                <p>The current temperature is <span class="temp-value">{TEMP}°C</span>.</p>
-               <a href="mailto:{EMAIL_ACCOUNT}?subject=Temperature%20Response&body=YES" class="action-button">Activate Fan</a>
-                <a href="mailto:{EMAIL_ACCOUNT}?subject=Temperature%20Response&body=NO" class="ignore" style="display: block; color: #a9a9a9; margin-top: 20px;">Ignore</a>
+                <p>
+                    The current temperature is <span class="temp-value">{TEMP}°C</span>.
+                </p>
+                <a href="mailto:{EMAIL_ACCOUNT}?subject=Temperature%20Response&body=YES" class="action-button">
+                    Activate Fan
+                </a>
+                <a href="mailto:{EMAIL_ACCOUNT}?subject=Temperature%20Response&body=NO"
+                   class="ignore"
+                   style="display: block; color: #a9a9a9; margin-top: 20px;">
+                    Ignore
+                </a>
+                <span class="automated">O'Blocks Automated Messages</span>
             </td>
         </tr>
     </table>
 </body>
-
-</html>
-"""
+</html>"""
+    
     message.add_alternative(html_content, subtype="html")
 
 
