@@ -18,7 +18,6 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED, GPIO.OUT)
 setup_motor()
 
-
 # led state like lab 2 task 2 to keep light turned on til button is pressed again
 # fan state for updating the status of the fan
 led_state = False
@@ -69,7 +68,7 @@ def get_fan_status():
 def temperature():
     temp = get_temperature()
     if temp is not None:
-        if temp > 22:
+        if temp > 24:
             send_email(temp)
         return jsonify({'temperature': temp})
     else:
@@ -98,8 +97,8 @@ def email_checker():
     while True:
         new_fan_state = check_response()
         if new_fan_state is not None:
-            update_fan_state(new_fan_state) 
-        time.sleep(5)
+            update_fan_state(new_fan_state)
+        time.sleep(15)
 
 # run flask server
 if __name__ == '__main__':
