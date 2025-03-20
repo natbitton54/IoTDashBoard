@@ -68,6 +68,7 @@ def get_fan_status():
 # API endpoints for temperature and humidity
 @app.route('/temperature', methods=['GET'])
 def temperature():
+    global email_sent
     temp = get_temperature()
     if temp is not None:
         if temp > 22 and not email_sent:

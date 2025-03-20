@@ -189,7 +189,7 @@ def send_email(TEMP):
         server.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
         server.send_message(message)
         server.quit()
-        print("Email Sent!")
+        print("You have a new email!")
     except Exception as e:
         print(f"Error Sending Email: {e}")
 
@@ -203,14 +203,14 @@ def check_response():
         mail.select("inbox")
 
         status, messages = mail.search(None, "Unseen")
-        email_ids = messages[0].split()
+        notifications = messages[0].split()
 
-        if not email_ids:
-            print("No new emails.")
+        if not notifications:
+            print("You have no new emails.")
             return None
 
-        for e_id in email_ids:
-            status, message_data = mail.fetch(e_id, "(RFC822)")
+        for notification in notifications:
+            status, message_data = mail.fetch(notification, "(RFC822)")
             for response_part in message_data:
                 if isinstance(response_part, tuple):
                     message = email.message_from_bytes(response_part[1])
@@ -245,7 +245,7 @@ def check_response():
                         return False
                     else:
                         print("Invalid response in email body. Email Ignored.")
-                        mail.store(e_id, '+FLAGS', '\\Seen')
+                        mail.store(notification, '+FLAGS', '\\Seen')
                         mail.logout()
                         return None
         mail.logout()
