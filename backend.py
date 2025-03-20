@@ -23,6 +23,7 @@ setup_motor()
 # fan state for updating the status of the fan
 led_state = False
 fan_state = False
+email_sent = False
 
 # get html file
 @app.route('/')
@@ -69,8 +70,9 @@ def get_fan_status():
 def temperature():
     temp = get_temperature()
     if temp is not None:
-        if temp > 22:
+        if temp > 22 and not email_sent:
             send_email(temp)
+            email_sent = True
         return jsonify({'temperature': temp})
     else:
         return jsonify({'error': 'Failed to read temperature.'}), 500

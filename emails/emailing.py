@@ -195,6 +195,8 @@ def send_email(TEMP):
 
 # checking the email response function
 def check_response():
+    global email_sent
+
     try:
         mail = imaplib.IMAP4_SSL(IMAP_SERVER, IMAP_PORT)
         mail.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
@@ -233,10 +235,12 @@ def check_response():
 
                     if first_word == "YES":
                         print("Fan turned ON.")
+                        email_sent = False
                         mail.logout()
                         return True
                     elif first_word == "NO":
                         print("Fan turned OFF.")
+                        email_sent = False
                         mail.logout()
                         return False
                     else:
