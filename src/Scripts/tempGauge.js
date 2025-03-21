@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const minTemp = -50;
     const maxTemp = 50;
     const tempRange = maxTemp - minTemp; // 100
-    const numTicks = 11; // -50, -40, ..., 50
+    const numTicks = 9; // increments of 12.5
 
     for (let i = 0; i < numTicks; i++) {
         const temp = minTemp + (i * (tempRange / (numTicks - 1)));
