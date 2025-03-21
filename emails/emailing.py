@@ -2,7 +2,11 @@ import RPi.GPIO as GPIO # type: ignore
 import smtplib # try doing sudo apt install python3-smtplib / or python3-secure-smtplib
 import imaplib # try doing sudo apt install python3-imaplib
 import email
+import uuid
 from email.message import EmailMessage
+
+# tokens
+tokens = {}
 
 # email infos
 SMTP_SERVER = "smtp.gmail.com"
@@ -14,14 +18,21 @@ EMAIL_ACCOUNT = "smartdashboard60@gmail.com"
 EMAIL_PASSWORD = "koyu oxxd rdvj hxzl"
 RECIPIENT = "nathanielbitton18@gmail.com"
 
+# fan state
 fan_state = False
 
 # sending email function
 def send_email(TEMP):
+
+    #create valid tokens
+    token = str(uuid.uuid4())[:8]
+    tokens[token] = True
+
+
     message = EmailMessage()
     message["From"] = EMAIL_ACCOUNT
     message["To"] = RECIPIENT
-    message["Subject"] = "Temperature Control"
+    message["Subject"] = f"Temperature Control - Token: {token}"
     # message.set_content(f"The current temperature is {TEMP}°C. Would you like to turn the fan on?\n\n"
     #                     f"Please reply with 'YES' or 'NO'.")
     
@@ -165,10 +176,10 @@ def send_email(TEMP):
                 <p>
                     The current temperature is <span class="temp-value">{TEMP}°C</span>.
                 </p>
-                <a href="mailto:{EMAIL_ACCOUNT}?subject=Temperature%20Response&body=YES" class="action-button">
+                <a href="mailto:{EMAIL_ACCOUNT}?subject=Temperature%20Response&body=YES {token}" class="action-button">
                     Activate Fan
                 </a>
-                <a href="mailto:{EMAIL_ACCOUNT}?subject=Temperature%20Response&body=NO"
+                <a href="mailto:{EMAIL_ACCOUNT}?subject=Temperature%20Response&body=NO {token}"
                    class="ignore"
                    style="display: block; color: #a9a9a9; margin-top: 20px;">
                     Ignore
@@ -230,9 +241,23 @@ def check_response():
                     print(f"Subject: {subject}")
                     print(f"Message:\n{body}")
 
-                    # this is the fan status based on response of the user
-                    first_word = body.strip().split()[0].upper()
+                    words = body.strip().split()
+                    if len(words) < 2:
+                        print("Email not allowed. Email Ignored")
+                        mail.store(notification, '+FLAGS', '\\Seen')
+                        continue
 
+                    first_word = words[0].upper()
+                    token = words[1]
+
+                    if token not in tokens or not tokens[token]:
+                        print(f"Token expired. {token}")
+                        mail.store(notification, '+FLAGS', '\\Seen')
+                        continue 
+
+                    tokens[token] = False
+
+                    # this is the fan status based on response of the user
                     if first_word == "YES":
                         print("Fan turned ON.")
                         email_sent = False
