@@ -12,7 +12,7 @@ IMAP_PORT = 993
 
 EMAIL_ACCOUNT = "smartdashboard60@gmail.com"
 EMAIL_PASSWORD = "koyu oxxd rdvj hxzl"
-RECIPIENT = "wayned0527@gmail.com"
+RECIPIENT = "nathanielbitton18@gmail.com"
 
 fan_state = False
 
