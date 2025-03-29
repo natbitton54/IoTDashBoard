@@ -2,7 +2,9 @@ from flask import Flask, render_template, send_from_directory, request, jsonify 
 from sensors.dht11F import get_humidity, get_temperature
 from emails.emailing import send_email, check_response
 from motors.motor import setup_motor, run_motor
+from datetime import datetime
 import RPi.GPIO as GPIO # type: ignore
+import paho.mqtt.client as mqtt #type: ignore
 import threading
 import time
 
@@ -13,7 +15,7 @@ app = Flask(__name__, template_folder="src/Views", static_folder="src")
 GPIO.cleanup()
 time.sleep(0.5)
 GPIO.setwarnings(False)
-LED = 18
+LED = 21
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED, GPIO.OUT)
 setup_motor()
@@ -24,6 +26,10 @@ setup_motor()
 led_state = False
 fan_state = False
 email_sent = False
+
+light_led_state = False
+light_email_sent = False
+light_value = "Waiting for data"
 
 # get html file
 @app.route('/')
@@ -85,7 +91,16 @@ def humidity():
         return jsonify({'humidity': humidity})
     else:
         return jsonify({'error': 'Failed to read humidity.'}), 500
-    
+
+# API endpoint to get light intensity, led state, and if the email is sent for the light status
+@app.route('/light-status', methods=['GET'])
+def get_light_status():
+    return jsonify({
+        'light': light_value,
+        'led_state': 'ON' if light_led_state else 'OFF',
+        'email_sent': light_email_sent
+    })
+
 # helper function
 def update_fan_state(new_state):
    global fan_state
@@ -95,6 +110,44 @@ def update_fan_state(new_state):
        run_motor("RIGHT")
    else:
        run_motor("STOP")
+
+# this is the mqtt callback functions
+def on_connect(client, userdata, flags, rc):
+    print("Connected to MQTT broker " + str(rc))
+    client.subscribe("sensor/light")
+
+# function for turning the led on based on intensity of light, and for emailing.
+def on_message(client, userdata, message):
+    global light_value, light_led_state, light_email_sent
+
+    payload = message.payload.decode()
+    light_value = payload
+    print(f"MQTT message received -- Topic: {message.topic} | Value: {payload}")
+    
+    try:
+        value = int(payload)
+
+    except ValueError:
+        print("Light Value Invalid!")
+        return
+    
+    if value < 400:
+        if not light_led_state:
+            GPIO.output(LED, True)
+            light_led_state = True
+            print("Light intensity is low -- LED turned ON")
+
+        if not light_email_sent:
+            now = datetime.now().strftime("%H:%M")
+            send_email(f"The Light is on at {now}")
+            light_email_sent = True
+            print("Email on lighting sent!")
+    else:
+        if light_led_state:
+            GPIO.output(LED, False)
+            light_led_state = False
+            print("Light intensity is fine -- LED turned OFF")
+        light_email_sent = False
 
 def email_checker():
     global fan_state
@@ -107,7 +160,16 @@ def email_checker():
 # run flask server
 if __name__ == '__main__':
    try:
-       threading.Thread(target=email_checker, daemon=True).start()
-       app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
+        # email checker
+        threading.Thread(target=email_checker, daemon=True).start()
+
+        mqtt_client = mqtt.Client()
+        mqtt_client.on_connect = on_connect
+        mqtt_client.on_message = on_message
+        mqtt_client.connect("localhost", 1883, 60)
+        mqtt_client.loop_start()
+
+        # flask app
+        app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
    except KeyboardInterrupt:
        GPIO.cleanup()
