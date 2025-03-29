@@ -4,7 +4,7 @@ from emails.emailing import send_email, check_response
 from motors.motor import setup_motor, run_motor
 from datetime import datetime
 import RPi.GPIO as GPIO # type: ignore
-import paho.mqtt.client as mqtt
+import paho.mqtt.client as mqtt #type: ignore
 import threading
 import time
 
