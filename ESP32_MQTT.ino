@@ -1,8 +1,8 @@
 #include "WiFi.h"
 #include "PubSubClient.h"
 
-const char* ssid = "Sunskie"; // TP-Link_2AD8
-const char* password = "4384060527"; // 14730078
+const char* ssid = "Dwayne"; // TP-Link_2AD8
+const char* password = "wayned27"; // 14730078
 
 
 const char* mqtt_server = "10.0.0.54";

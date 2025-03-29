@@ -41,7 +41,7 @@ function drawBulb(brightness) {
 
 // Function to update light brightness from the end point which we received from the esp
 function updateLightIntensity() {
-    fetch("/get_light_status")  
+    fetch("/light_status")  
         .then(response => response.json())
         .then(data => {
             let brightness = Math.min(100, Math.max(0, (data.ldr / 40.95))); 
