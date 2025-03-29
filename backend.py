@@ -100,7 +100,7 @@ def get_light_status():
         'led_state': 'ON' if light_led_state else 'OFF',
         'email_sent': light_email_sent
     })
-
+  
 # helper function
 def update_fan_state(new_state):
    global fan_state

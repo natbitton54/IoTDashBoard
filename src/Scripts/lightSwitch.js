@@ -41,10 +41,10 @@ function drawBulb(brightness) {
 
 // Function to update light brightness from the end point which we received from the esp
 function updateLightIntensity() {
-    fetch("/light_status")  
+    fetch("/light-status")  
         .then(response => response.json())
         .then(data => {
-            let brightness = Math.min(100, Math.max(0, (data.ldr / 40.95))); 
+            let brightness = Math.min(100, Math.max(0, (data.light / 40.95))); 
             drawBulb(brightness);
         })
         .catch(error => console.error("Error fetching LDR value:", error));
