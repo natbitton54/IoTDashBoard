@@ -15,7 +15,7 @@ app = Flask(__name__, template_folder="src/Views", static_folder="src")
 GPIO.cleanup()
 time.sleep(0.5)
 GPIO.setwarnings(False)
-LED = 18
+LED = 21
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED, GPIO.OUT)
 setup_motor()
@@ -166,7 +166,7 @@ if __name__ == '__main__':
         mqtt_client = mqtt.Client()
         mqtt_client.on_connect = on_connect
         mqtt_client.on_message = on_message
-        mqtt_client.connect("10.0.0.54", 1883, 60)
+        mqtt_client.connect("localhost", 1883, 60)
         mqtt_client.loop_start()
 
         # flask app

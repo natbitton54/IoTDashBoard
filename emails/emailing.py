@@ -2,11 +2,8 @@ import RPi.GPIO as GPIO # type: ignore
 import smtplib # try doing sudo apt install python3-smtplib / or python3-secure-smtplib
 import imaplib # try doing sudo apt install python3-imaplib
 import email
-import uuid
 from email.message import EmailMessage
 
-# tokens
-tokens = {}
 
 # email infos
 SMTP_SERVER = "smtp.gmail.com"
@@ -14,22 +11,25 @@ SMTP_PORT = 587
 IMAP_SERVER = "imap.gmail.com"
 IMAP_PORT = 993
 
+
 EMAIL_ACCOUNT = "smartdashboard60@gmail.com"
 EMAIL_PASSWORD = "koyu oxxd rdvj hxzl"
 RECIPIENT = "wayned0527@gmail.com"
 
-# fan state
+
 fan_state = False
+
 
 # sending email function
 def send_email(content_msg):
     message = EmailMessage()
     message["From"] = EMAIL_ACCOUNT
     message["To"] = RECIPIENT
-    message["Subject"] = f"Temperature Control - Token: {token}"
+    message["Subject"] = "Temperature Control"
     # message.set_content(f"The current temperature is {TEMP}°C. Would you like to turn the fan on?\n\n"
     #                     f"Please reply with 'YES' or 'NO'.")
-    
+   
+
 
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -45,7 +45,7 @@ def send_email(content_msg):
             --btn-hover-text: #64ffda;
             --btn-text: #eee;
         }}
-        
+       
         body,
         table,
         td,
@@ -57,6 +57,7 @@ def send_email(content_msg):
             box-sizing: border-box;
         }}
 
+
         body {{
             -webkit-text-size-adjust: none;
             -ms-text-size-adjust: none;
@@ -65,10 +66,12 @@ def send_email(content_msg):
             font-family: 'Helvetica', Arial, sans-serif;
         }}
 
+
         a {{
             color: #ff4757;
             text-decoration: none;
         }}
+
 
         .container {{
             width: 100%;
@@ -81,10 +84,12 @@ def send_email(content_msg):
             margin-top: 20px;
         }}
 
+
         .content {{
             padding: 20px;
             text-align: center;
         }}
+
 
         .warning-banner {{
             background-color: #000;
@@ -95,12 +100,14 @@ def send_email(content_msg):
             margin-bottom: 15px;
         }}
 
+
         .warning-banner i {{
             margin-right: 8px;
             margin-left: 8px;
             font-size: 18px;
             color: yellow;
         }}
+
 
         .content p {{
             font-size: 15px;
@@ -109,10 +116,12 @@ def send_email(content_msg):
             color: #d3d3d3;
         }}
 
+
         .temp-value {{
             font-size: 17px;
             color: #ff4757;
         }}
+
 
         .action-button {{
             margin-top: 15px;
@@ -127,15 +136,18 @@ def send_email(content_msg):
             transition: background 0.3s, transform 0.2s, color 0.3s;
         }}
 
+
         .action-button:hover {{
             background: var(--btn-hover-bg);
             color: var(--btn-hover-text);
             transform: scale(1.05);
         }}
 
+
         .ignore:hover {{
             text-decoration: line-through;
         }}
+
 
         .automated {{
             font-size: 10.5px;
@@ -145,6 +157,7 @@ def send_email(content_msg):
             font-style: italic;
             font-weight: bold;
         }}
+
 
         @media only screen and (max-width: 600px) {{
             .container {{
@@ -170,10 +183,10 @@ def send_email(content_msg):
                 <p>
                     The current temperature is <span class="temp-value">{content_msg}</span>.
                 </p>
-                <a href="mailto:{EMAIL_ACCOUNT}?subject=Temperature%20Response&body=YES {token}" class="action-button">
+                <a href="mailto:{EMAIL_ACCOUNT}?subject=Temperature%20Response&body=YES" class="action-button">
                     Activate Fan
                 </a>
-                <a href="mailto:{EMAIL_ACCOUNT}?subject=Temperature%20Response&body=NO {token}"
+                <a href="mailto:{EMAIL_ACCOUNT}?subject=Temperature%20Response&body=NO"
                    class="ignore"
                    style="display: block; color: #a9a9a9; margin-top: 20px;">
                     Ignore
@@ -184,8 +197,10 @@ def send_email(content_msg):
     </table>
 </body>
 </html>"""
-    
+   
     message.add_alternative(html_content, subtype="html")
+
+
 
 
     try:
@@ -198,21 +213,26 @@ def send_email(content_msg):
     except Exception as e:
         print(f"Error Sending Email: {e}")
 
+
 # checking the email response function
 def check_response():
     global email_sent
+
 
     try:
         mail = imaplib.IMAP4_SSL(IMAP_SERVER, IMAP_PORT)
         mail.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
         mail.select("inbox")
 
+
         status, messages = mail.search(None, "Unseen")
         notifications = messages[0].split()
+
 
         if not notifications:
             print("You have no new emails.")
             return None
+
 
         for notification in notifications:
             status, message_data = mail.fetch(notification, "(RFC822)")
@@ -221,6 +241,7 @@ def check_response():
                     message = email.message_from_bytes(response_part[1])
                     subject = message["subject"]
                     sender = message["from"]
+
 
                     # email body
                     if message.is_multipart():
@@ -231,27 +252,16 @@ def check_response():
                     else:
                         body = message.get_payload(decode=True).decode().strip().upper()
 
+
                     print(f"\nNew Email from {sender}")
                     print(f"Subject: {subject}")
                     print(f"Message:\n{body}")
 
-                    words = body.strip().split()
-                    if len(words) < 2:
-                        print("Email not allowed. Email Ignored")
-                        mail.store(notification, '+FLAGS', '\\Seen')
-                        continue
-
-                    first_word = words[0].upper()
-                    token = words[1]
-
-                    if token not in tokens or not tokens[token]:
-                        print(f"Token expired. {token}")
-                        mail.store(notification, '+FLAGS', '\\Seen')
-                        continue 
-
-                    tokens[token] = False
 
                     # this is the fan status based on response of the user
+                    first_word = body.strip().split()[0].upper()
+
+
                     if first_word == "YES":
                         print("Fan turned ON.")
                         email_sent = False
@@ -269,7 +279,7 @@ def check_response():
                         return None
         mail.logout()
         return None
-    
+   
     except Exception as e:
         print(f"Error Receiving Emails: {e}")
         return None
