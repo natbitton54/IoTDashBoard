@@ -22,13 +22,7 @@ RECIPIENT = "wayned0527@gmail.com"
 fan_state = False
 
 # sending email function
-def send_email(TEMP):
-
-    #create valid tokens
-    token = str(uuid.uuid4())[:8]
-    tokens[token] = True
-
-
+def send_email(content_msg):
     message = EmailMessage()
     message["From"] = EMAIL_ACCOUNT
     message["To"] = RECIPIENT
@@ -174,7 +168,7 @@ def send_email(TEMP):
                     &nbsp;<span style="color: yellow;">&#9888;</span>
                 </div>
                 <p>
-                    The current temperature is <span class="temp-value">{TEMP}°C</span>.
+                    The current temperature is <span class="temp-value">{content_msg}</span>.
                 </p>
                 <a href="mailto:{EMAIL_ACCOUNT}?subject=Temperature%20Response&body=YES {token}" class="action-button">
                     Activate Fan
