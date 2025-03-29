@@ -39,18 +39,18 @@ function drawBulb(brightness) {
     ctx.stroke();
 }
 
-//this is for testing purposees
-
-function getSimulatedLdrValue() {
-    return Math.floor(Math.random() * 4096); 
+// Function to update light brightness from the end point which we received from the esp
+function updateLightIntensity() {
+    fetch("/get_light_status")  
+        .then(response => response.json())
+        .then(data => {
+            let brightness = Math.min(100, Math.max(0, (data.ldr / 40.95))); 
+            drawBulb(brightness);
+        })
+        .catch(error => console.error("Error fetching LDR value:", error));
 }
 
-function updateBrightness() {
-    const simulatedLdr = getSimulatedLdrValue();  
-    let brightness = Math.min(100, Math.max(0, (simulatedLdr / 40.95))); 
-    drawBulb(brightness);
-}
+// Update light eevery second
+setInterval(updateLightIntensity, 1000);
 
-setInterval(updateBrightness, 1000);
-
-updateBrightness();
+updateLightIntensity();
