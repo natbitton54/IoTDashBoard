@@ -1,43 +1,32 @@
 const canvas = document.getElementById('lightCanvas');
 const ctx = canvas.getContext('2d');
-const toggleBtn = document.getElementById('toggleBtn');
-let isOn = false;
 
 const centerX = canvas.width / 2; 
 const centerY = canvas.height / 2 - 30; 
 const bulbRadius = 50;
 
-
-// Function to draw the light bulb
-function drawBulb(isOn) {
+function drawBulb(brightness) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (isOn) {
-        let glow = ctx.createRadialGradient(centerX, centerY, 10, centerX, centerY, 80);
-        glow.addColorStop(0, 'rgba(255, 255, 150, 0.8)');
-        glow.addColorStop(1, 'rgba(255, 255, 0, 0)');
-        ctx.fillStyle = glow;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
+    let glow = ctx.createRadialGradient(centerX, centerY, 10, centerX, centerY, 80); 
+    glow.addColorStop(0, `rgba(255, 255, 150, ${brightness / 100})`);
+    glow.addColorStop(1, 'rgba(255, 255, 0, 0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw the lightbulb
     ctx.beginPath();
     ctx.arc(centerX, centerY, bulbRadius, 0, Math.PI * 2);
-    ctx.fillStyle = isOn ? "yellow" : "#ccc";
+    ctx.fillStyle = `rgba(255, 255, 0, ${brightness / 100})`;
     ctx.fill();
     ctx.strokeStyle = '#999';
     ctx.lineWidth = 3;
     ctx.stroke();
 
-    // Filament glow
-    if (isOn) {
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, 20, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(255, 255, 200, 0.6)";
-        ctx.fill();
-    }
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, bulbRadius, 0, Math.PI * 2); 
+    ctx.fillStyle = `rgba(255, 255, 200, ${brightness / 120})`;
+    ctx.fill();
 
-    // Draw the base centered
     const baseWidth = 40;
     const baseHeight = 50;
     const baseX = centerX - baseWidth / 2;
@@ -50,32 +39,18 @@ function drawBulb(isOn) {
     ctx.stroke();
 }
 
-// Function to update UI based on LED status from Flask
-function updateStatus() {
-   fetch("/status")
-       .then(response => response.json())
-       .then(data => {
-           isOn = data.state === "ON";
-           drawBulb(isOn);
-           toggleBtn.textContent = isOn ? "Turn Off" : "Turn On";
-       })
-       .catch(error => console.error("Error fetching status:", error));
+//this is for testing purposees
+
+function getSimulatedLdrValue() {
+    return Math.floor(Math.random() * 4096); 
 }
 
-// Toggle button click event
-toggleBtn.addEventListener("click", () => {
-   const newState = isOn ? "OFF" : "ON";
+function updateBrightness() {
+    const simulatedLdr = getSimulatedLdrValue();  
+    let brightness = Math.min(100, Math.max(0, (simulatedLdr / 40.95))); 
+    drawBulb(brightness);
+}
 
+setInterval(updateBrightness, 1000);
 
-   fetch("/switch", {
-       method: "POST",
-       headers: { "Content-Type": "application/json" },
-       body: JSON.stringify({ state: newState })
-   })
-   .then(response => response.json())
-   .then(() => updateStatus())
-   .catch(error => console.error("Error toggling switch:", error));
-});
-
-// Initial setup: Get current LED status when the page load
-updateStatus();
+updateBrightness();
