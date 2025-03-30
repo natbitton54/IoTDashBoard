@@ -114,7 +114,15 @@
                         <h5>Lighting</h5>
                     </div>
                     <canvas id="lightCanvas" width="180" height="300"></canvas>
-                    <input type="range" id="lightSlider" min="0" max="100" value="0" disabled>
+                    <div class="light-slider-container">
+                        <i class="fa-solid fa-sun min-icon"></i>
+                        <input type="range" id="lightSlider" class="light-slider" min="0" max="100" value="0"
+                            style="background: linear-gradient(to right, #aaa 0%, #aaa 100%);" />
+                    </div>
+
+                    <p id="lightPercentageIntensity" style="margin-top: 10px; font-size: 12px; font-weight: bold;">
+                        <span id="lightValue"></span>
+                    </p>
                 </div>
                 <div class="phone-control">
                     <div class="bg-image"></div>
@@ -122,6 +130,7 @@
                 </div>
             </div>
         </div>
+
     </div>
     <script src="../Scripts/temperature.js"></script>
     <script src="../Scripts/lightSwitch.js"></script>
@@ -129,6 +138,7 @@
     <script src="../Scripts/theme.js"></script>
     <script src="../Scripts/tempGauge.js"></script>
     <script src="../Scripts/humidityGauge.js"></script>
+    <script src="../Scripts/emailAlert.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
-
 </html>
