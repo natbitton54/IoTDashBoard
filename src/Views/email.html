@@ -95,19 +95,6 @@
             transition: background 0.3s, transform 0.2s, color 0.3s;
         }
 
-        .action-button a{
-            margin-top: 15px;
-            padding: 10px 24px;
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--btn-text);
-            background-color: var(--btn-bg);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s, color 0.3s;
-        }
-
         .action-button:hover {
             background: var(--btn-hover-bg);
             color: var(--btn-hover-text);
@@ -158,13 +145,16 @@
                     {% endif %}
                 </p>
 
-                <a href="mailto:{{ email_account }}?subject=Response&body=YES" class="action-button">
+                <!-- Conditional Rendering: Display fan controls only for temperature alerts -->
+                {% if is_temp %}
+                <a href="mailto:{{ email_account }}?subject=Temperature%20Response&body=YES" class="action-button">
                     Activate Fan
                 </a>
-                <a href="mailto:{{ email_account }}?subject=Response&body=NO" class="ignore"
+                <a href="mailto:{{ email_account }}?subject=Temperature%20Response&body=NO" class="ignore"
                     style="display: block; color: #a9a9a9; margin-top: 20px;">
                     Ignore
                 </a>
+                {% endif %}
                 <span class="automated">O'Blocks Automated Messages</span>
             </td>
         </tr>
