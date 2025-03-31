@@ -53,6 +53,45 @@ function drawBulb(isOn) {
   ctx.fillStyle = "#666";
   ctx.fill();
   ctx.stroke();
+
+  // Draw the toggle  (non-clickable)
+  const toggleWidth = 30;
+  const toggleHeight = 15;
+  const toggleX = centerX - toggleWidth / 2;
+  const toggleY = baseY + baseHeight / 2 - toggleHeight / 2;
+
+  // Toggle colors (Green for "ON", Red for "OFF")
+  const offColor = "#F44336"; // Red for OFF
+  const onColor = "#4CAF50"; // Green for ON
+
+  // Draw the background of the toggle
+  ctx.beginPath();
+  ctx.rect(toggleX, toggleY, toggleWidth, toggleHeight);
+  ctx.fillStyle = isOn ? onColor : offColor;
+  ctx.fill();
+  ctx.strokeStyle = "#999";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Draw the switch knob (circle) inside the toggle
+  const knobRadius = 8;
+  const knobX = isOn ? toggleX + toggleWidth - knobRadius * 1 : toggleX + knobRadius;
+  const knobY = toggleY + toggleHeight / 2;
+
+  ctx.beginPath();
+  ctx.arc(knobX, knobY, knobRadius, 0, Math.PI * 2);
+  ctx.fillStyle = "#fff";
+  ctx.fill();
+  ctx.stroke();
+
+  // Draw the text ("ON" or "OFF")
+  const textX = centerX + 40; 
+  const textY = centerY + bulbRadius + 10;
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#8d8e91";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  ctx.fillText(isOn ? "ON" : "OFF", textX, textY);
 }
 
 function updateStatus() {
@@ -64,7 +103,7 @@ function updateStatus() {
       return response.json();
     })
     .then(data => {
-      const lightIntensity = data.light;
+      const lightIntensity = data;
       const slider = document.getElementById("lightSlider");
       const lightText = document.getElementById("lightValue");
 
@@ -74,7 +113,7 @@ function updateStatus() {
       if (!isNaN(lightIntensity)) {
         slider.value = lightIntensity;
         lightText.textContent = `Brightness: ${lightIntensity}%`;
-        const percentage = (lightIntensity / 100) * 100;
+        const percentage = (lightIntensity / 4095) * 100;
         slider.style.background = `linear-gradient(to right, var(--link-hover-color) 0%, var(--link-hover-color) ${percentage}%, #aaa ${percentage}%, #aaa 100%)`;
       } else {
         throw new Error('Received NaN value for light intensity');
