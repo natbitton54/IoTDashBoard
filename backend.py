@@ -35,6 +35,7 @@ email_sent = False
 
 light_led_state = False
 light_email_sent = False
+previous_light_state = None
 light_value = "Waiting for data"
 
 
@@ -163,7 +164,7 @@ def on_connect(client, userdata, flags, rc):
 
 # function for turning the led on based on intensity of light, and for emailing.
 def on_message(client, userdata, message):
-    global light_value, light_led_state, light_email_sent
+    global light_value, light_led_state, light_email_sent, previous_light_state
 
     payload = message.payload.decode()
     light_value = payload
@@ -177,22 +178,26 @@ def on_message(client, userdata, message):
         return
 
     if value < 400:
-        if not light_led_state:
-            GPIO.output(LED, True)
-            light_led_state = True
-            print("Light intensity is low -- LED turned ON")
+        if previous_light_state != "LOW":
+            if not light_led_state:
+                GPIO.output(LED, True)
+                light_led_state = True
+                print("Light intensity is low -- LED turned ON")
 
-        if not light_email_sent:
-            now = datetime.now().strftime("%H:%M")
-            send_email(f"The Light is on at {now}", is_temp=False)
-            light_email_sent = True
-            print("Email on lighting sent!")
+            if not light_email_sent:
+                now = datetime.now().strftime("%H:%M")
+                send_email(f"The Light is on at {now}", is_temp=False)
+                light_email_sent = True
+                print("Email on lighting sent!")
+            previous_light_state = "LOW"
     else:
-        if light_led_state:
-            GPIO.output(LED, False)
-            light_led_state = False
-            print("Light intensity is fine -- LED turned OFF")
-        light_email_sent = False
+        if previous_light_state != "NORMAL":
+            if light_led_state:
+                GPIO.output(LED, False)
+                light_led_state = False
+                print("Light intensity is fine -- LED turned OFF")
+            light_email_sent = False
+        previous_light_state = "NORMAL"
 
 
 def email_checker():
