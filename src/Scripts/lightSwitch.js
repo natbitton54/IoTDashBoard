@@ -103,7 +103,7 @@ function updateStatus() {
       return response.json();
     })
     .then(data => {
-      const lightIntensity = data;
+      const lightIntensity = data.light;
       const slider = document.getElementById("lightSlider");
       const lightText = document.getElementById("lightValue");
 
