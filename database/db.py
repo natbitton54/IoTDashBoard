@@ -2,7 +2,7 @@ import sqlite3
 import os
 
 #db path
-DB = os.path.join(os.path.dirname(__file__)), "users.db"
+DB = os.path.join(os.path.dirname(__file__), "users.db")
 
 # connect to sqlite (if file not exist, create one)
 connect = sqlite3.connect(DB)
