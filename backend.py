@@ -92,7 +92,8 @@ def temperature():
     global email_sent
     temp = get_temperature()
     if temp is not None:
-        if temp > 22 and not email_sent:
+        threshold = current_user.get("temp_threshold", 22)
+        if temp > threshold and not email_sent:
             send_email(temp, is_temp=True)
             email_sent = True
         return jsonify({"temperature": temp})
@@ -203,7 +204,8 @@ def on_message(client, userdata, message):
         print("Light Value Invalid!")
         return
 
-    if value < 400:
+    threshold = current_user.get("light_threshold", 400)
+    if value < threshold:
         if previous_light_state != "LOW":
             if not light_led_state:
                 GPIO.output(LED, True)
