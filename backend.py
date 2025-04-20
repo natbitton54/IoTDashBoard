@@ -156,9 +156,11 @@ def update_fan_state(new_state):
     else:
         run_motor("STOP")
 
+current_user = {}
 # rfid mqtt listener
 def on_rfid_tag(client, userdata, msg):
     global email_sent
+    global current_user
     uid = msg.payload.decode().strip().upper()
     print(f"[RFID] Tag received: {uid}")
 
@@ -172,8 +174,13 @@ def on_rfid_tag(client, userdata, msg):
 
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         send_email(f"{name} entered at {now}", is_temp=False)
+        current_user = user
     else:
         print("[RFID] Unrecognized Tag")
+
+@app.route("/user")
+def get_current_user():
+    return jsonify(current_user)
 
 # this is the mqtt callback functions
 def on_connect(client, userdata, flags, rc):
