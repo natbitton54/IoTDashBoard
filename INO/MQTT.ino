@@ -3,18 +3,23 @@
 #include <SPI.h>
 #include <MFRC522.h>
 
-const char* ssid = "Sunskie";
-const char* password = "4384060527";
-const char* mqtt_server = "10.0.0.54";
+
+const char* ssid = "";
+const char* password = "";
+const char* mqtt_server = "";
+
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
+
 const int lightPin = 34;
+
 
 #define SS_PIN 5
 #define RST_PIN 4
 MFRC522 rfid(SS_PIN, RST_PIN);
+
 
 void setup_wifi() {
   delay(10);
@@ -27,6 +32,7 @@ void setup_wifi() {
   Serial.println("\nWiFi connected. IP address: ");
   Serial.println(WiFi.localIP());
 }
+
 
 void reconnect() {
   while (!client.connected()) {
@@ -43,17 +49,22 @@ void reconnect() {
   }
 }
 
+
 void setup() {
   Serial.begin(115200);
 
+
   pinMode(lightPin, INPUT);
+
 
   SPI.begin(18, 19, 23, 5);
   rfid.PCD_Init();
 
+
   setup_wifi();
   client.setServer(mqtt_server, 1883);
 }
+
 
 void loop() {
   if (!client.connected()) {
@@ -68,21 +79,28 @@ void loop() {
   Serial.print("Light value: ");
   Serial.println(lightVal);
 
-
+  Serial.println("Waiting for RFID card...");
   if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial()) {
     String rfidUID = "";
     for (byte i = 0; i < rfid.uid.size; i++) {
+      if(i > 0) rfidUID += " ";
       rfidUID += (rfid.uid.uidByte[i] < 0x10 ? "0" : "");
       rfidUID += String(rfid.uid.uidByte[i], HEX);
     }
     rfidUID.toUpperCase();
 
+
     Serial.println("Card UID: " + rfidUID);
     client.publish("rfid/tag", rfidUID.c_str());
 
-    delay(2000);
+
     rfid.PICC_HaltA();
+    delay(1000);
   }
+
 
   delay(5000);
 }
+
+
+

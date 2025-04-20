@@ -8,7 +8,7 @@ from flask import (
 from sensors.dht11F import get_humidity, get_temperature
 from emails.emailing import send_email, check_response
 from motors.motor import setup_motor, run_motor
-from user_db import get_user_by_rfid
+from database.user_db import get_user_by_rfid
 from datetime import datetime
 import RPi.GPIO as GPIO  # type: ignore
 import paho.mqtt.client as mqtt  # type: ignore
