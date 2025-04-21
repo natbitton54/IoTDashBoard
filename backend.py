@@ -94,7 +94,7 @@ def temperature():
     if temp is not None:
         threshold = current_user.get("temp_threshold", 22)
         if temp > threshold and not email_sent:
-            send_email(temp, is_temp=True)
+            send_email(temp, is_temp=True, is_light=False)
             email_sent = True
         return jsonify({"temperature": temp})
     else:
@@ -157,7 +157,10 @@ def update_fan_state(new_state):
     else:
         run_motor("STOP")
 
+
 current_user = {}
+
+
 # rfid mqtt listener
 def on_rfid_tag(client, userdata, msg):
     global email_sent
@@ -170,14 +173,17 @@ def on_rfid_tag(client, userdata, msg):
         name = user["name"]
         temp_threshold = user["temp_threshold"]
         light_threshold = user["light_threshold"]
-        
-        print(f"[RFID] User '{name}' recognized. Temp: {temp_threshold}, Light: {light_threshold}")
+
+        print(
+            f"[RFID] User '{name}' recognized. Temp: {temp_threshold}, Light: {light_threshold}"
+        )
 
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        send_email(f"{name} entered at {now}", is_temp=False)
+        send_email(f"{name} entered at {now}", is_temp=False, is_light=False)
         current_user = user
     else:
         print("[RFID] Unrecognized Tag")
+
 
 @app.route("/qrcode", methods=["POST"])
 def qrcode():
@@ -191,25 +197,30 @@ def qrcode():
         temp_threshold = user["temp_threshold"]
         light_threshold = user["light_threshold"]
 
-        print(f"[QR] User '{name}' recognized. Temp: {temp_threshold}, Light: {light_threshold}")
+        print(
+            f"[QR] User '{name}' recognized. Temp: {temp_threshold}, Light: {light_threshold}"
+        )
 
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        send_email(f"{name} entered via QR at {now}", is_temp=False)
+        send_email(f"{name} entered via QR at {now}", is_temp=False, is_light=False)
         current_user = user
         return jsonify({"success": True})
     else:
         print("[QR] Unrecognized Code")
         return jsonify({"success": False}), 404
 
+
 @app.route("/user")
 def get_current_user():
     return jsonify(current_user)
+
 
 # this is the mqtt callback functions
 def on_connect(client, userdata, flags, rc):
     print("Connected to MQTT broker " + str(rc))
     client.subscribe("sensor/light")
     client.subscribe("rfid/tag")
+
 
 # function for turning the led on based on intensity of light, and for emailing.
 def on_message(client, userdata, message):
@@ -236,7 +247,7 @@ def on_message(client, userdata, message):
 
             if not light_email_sent:
                 now = datetime.now().strftime("%H:%M")
-                send_email(f"The Light is on at {now}", is_temp=False)
+                send_email(f"The Light is on at {now}", is_temp=False, is_light=True)
                 light_email_sent = True
                 print("Email on lighting sent!")
             previous_light_state = "LOW"
