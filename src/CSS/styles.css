@@ -450,5 +450,6 @@ body {
   .sensor-container {
     flex-direction: column;
     align-items: center;
+    
   }
 }
