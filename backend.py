@@ -179,6 +179,28 @@ def on_rfid_tag(client, userdata, msg):
     else:
         print("[RFID] Unrecognized Tag")
 
+@app.route("/qrcode", methods=["POST"])
+def qrcode():
+    global current_user
+    data = request.get_json()
+    uid = data.get("uid", "").strip().upper()
+
+    user = get_user_by_rfid(uid)
+    if user:
+        name = user["name"]
+        temp_threshold = user["temp_threshold"]
+        light_threshold = user["light_threshold"]
+
+        print(f"[QR] User '{name}' recognized. Temp: {temp_threshold}, Light: {light_threshold}")
+
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        send_email(f"{name} entered via QR at {now}", is_temp=False)
+        current_user = user
+        return jsonify({"success": True})
+    else:
+        print("[QR] Unrecognized Code")
+        return jsonify({"success": False}), 404
+
 @app.route("/user")
 def get_current_user():
     return jsonify(current_user)
