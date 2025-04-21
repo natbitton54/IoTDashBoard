@@ -133,18 +133,21 @@
         <td class="content">
           <div class="warning-banner">
             <span style="color: yellow">&#9888; &nbsp;</span>
-            Alert: {{ "Temperature" if is_temp else "Light" }} Detected
-            &nbsp;<span style="color: yellow">&#9888;</span>
+            Alert: {% if is_temp %} Temperature {% elif is_light %} Light {%
+            else %} User Access {% endif %} Detected &nbsp;<span
+              style="color: yellow"
+              >&#9888;</span
+            >
           </div>
+
           <p>
             {% if is_temp %} The current temperature is
             <span class="temp-value">{{ value }}</span>°C. {% elif is_light %}
             The light was turned on at
-            <span class="temp-value">{{ value }}</span>. {% else %} User
-            accessed the system at <span class="temp-value">{{ value }}</span>.
+            <span class="temp-value">{{ value }}</span>. {% else %} <span class="temp-value">{{ value }}</span>.
             {% endif %}
           </p>
-          
+
           <!-- Conditional Rendering: Display fan controls only for temperature alerts -->
           {% if is_temp %}
           <a
