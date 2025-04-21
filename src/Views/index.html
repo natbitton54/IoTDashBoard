@@ -20,14 +20,14 @@
             <div class="pfp">
                 <i class="fa-solid fa-user"></i>
             </div>
-            <div class="username">Username</div>
+            <div class="username" id="userName">Username</div>
         </div>
         <h2>IoT Dashboard</h2>
         <ul>
             <li>Favourites</li>
-            <li>Temperature: <span id="temperature"></span></li>
-            <li>Humidity: <span id="humidity"></span></li>
-            <li>Light Intensity: <span id="lightIntensity"></span></li>
+            <li>User Temp Threshold: <span id="userTempThreshold">-</span></li>
+            <li>User Light Threshold: <span id="userLightThreshold">-</span></li>
+
             <div style="text-align: center; margin-top: 20px;">
                 <button id="themeToggleBtn" class="btn">Toggle Light Mode</button>
             </div>
@@ -125,12 +125,15 @@
                 </div>
                 <div class="phone-control">
                     <div class="bg-image"></div>
-                    <p>Smart occupancy system</p>
-                </div>
+                    <p>Enter user code</p>
+                    <input type="text" id="qrInput" placeholder="Scan QR code" class="input-box" />
+                    <button class="enter-button" id="qrEnterBtn" onclick="getUserInfo()">Enter</button>
+                </div> 
             </div>
         </div>
 
     </div>
+    <script src="../Scripts/user-info.js"></script>
     <script src="../Scripts/temperature.js"></script>
     <script src="../Scripts/lightSwitch.js"></script>
     <script src="../Scripts/fanControl.js"></script>

@@ -19,23 +19,30 @@ IMAP_PORT = 993
 
 EMAIL_ACCOUNT = "smartdashboard60@gmail.com"
 EMAIL_PASSWORD = "koyu oxxd rdvj hxzl"
-RECIPIENT = "nathanielbitton18@gmail.com"
+RECIPIENT = "wayned0527@gmail.com"
 
 
 fan_state = False
 
 
 # sending email function
-def send_email(content_msg, is_temp=True):
+def send_email(content_msg, is_temp=True, is_light=False):
     message = EmailMessage()
     message["From"] = EMAIL_ACCOUNT
     message["To"] = RECIPIENT
-    message["Subject"] = "Temperature Control" if is_temp else "Light Alert"
+    message["Subject"] = (
+        "Temperature Control"
+        if is_temp
+        else "Light Alert" if is_light else "User Access Notification"
+    )
 
     # Render the email.html template with the dynamic variable
     template = env.get_template("email.html")
     html_content = template.render(
-        value=content_msg, is_temp=is_temp, email_account=EMAIL_ACCOUNT
+        value=content_msg,
+        is_temp=is_temp,
+        is_light=is_light,
+        email_account=EMAIL_ACCOUNT,
     )
 
     message.add_alternative(html_content, subtype="html")

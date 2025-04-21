@@ -8,6 +8,7 @@ from flask import (
 from sensors.dht11F import get_humidity, get_temperature
 from emails.emailing import send_email, check_response
 from motors.motor import setup_motor, run_motor
+from database.user_db import get_user_by_rfid
 from datetime import datetime
 import RPi.GPIO as GPIO  # type: ignore
 import paho.mqtt.client as mqtt  # type: ignore
@@ -91,8 +92,9 @@ def temperature():
     global email_sent
     temp = get_temperature()
     if temp is not None:
-        if temp > 22 and not email_sent:
-            send_email(temp, is_temp=True)
+        threshold = current_user.get("temp_threshold", 22)
+        if temp > threshold and not email_sent:
+            send_email(temp, is_temp=True, is_light=False)
             email_sent = True
         return jsonify({"temperature": temp})
     else:
@@ -156,10 +158,68 @@ def update_fan_state(new_state):
         run_motor("STOP")
 
 
+current_user = {}
+
+
+# rfid mqtt listener
+def on_rfid_tag(client, userdata, msg):
+    global email_sent
+    global current_user
+    uid = msg.payload.decode().strip().upper()
+    print(f"[RFID] Tag received: {uid}")
+
+    user = get_user_by_rfid(uid)
+    if user:
+        name = user["name"]
+        temp_threshold = user["temp_threshold"]
+        light_threshold = user["light_threshold"]
+
+        print(
+            f"[RFID] User '{name}' recognized. Temp: {temp_threshold}, Light: {light_threshold}"
+        )
+
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        send_email(f"{name} entered at {now}", is_temp=False, is_light=False)
+        current_user = user
+    else:
+        print("[RFID] Unrecognized Tag")
+
+
+@app.route("/qrcode", methods=["POST"])
+def qrcode():
+    global current_user
+    data = request.get_json()
+    uid = data.get("uid", "").strip().upper()
+
+    user = get_user_by_rfid(uid)
+    if user:
+        name = user["name"]
+        temp_threshold = user["temp_threshold"]
+        light_threshold = user["light_threshold"]
+
+        print(
+            f"[QR] User '{name}' recognized. Temp: {temp_threshold}, Light: {light_threshold}"
+        )
+
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        send_email(f"{name} entered via QR at {now}", is_temp=False, is_light=False)
+        current_user = user
+        return jsonify({"success": True})
+    else:
+        print("[QR] Unrecognized Code")
+        return jsonify({"success": False}), 404
+
+
+@app.route("/user")
+def get_current_user():
+    return jsonify(current_user)
+
+
 # this is the mqtt callback functions
 def on_connect(client, userdata, flags, rc):
     print("Connected to MQTT broker " + str(rc))
     client.subscribe("sensor/light")
+    client.subscribe("rfid/tag")
 
 
 # function for turning the led on based on intensity of light, and for emailing.
@@ -177,7 +237,8 @@ def on_message(client, userdata, message):
         print("Light Value Invalid!")
         return
 
-    if value < 400:
+    threshold = current_user.get("light_threshold", 400)
+    if value < threshold:
         if previous_light_state != "LOW":
             if not light_led_state:
                 GPIO.output(LED, True)
@@ -186,7 +247,7 @@ def on_message(client, userdata, message):
 
             if not light_email_sent:
                 now = datetime.now().strftime("%H:%M")
-                send_email(f"The Light is on at {now}", is_temp=False)
+                send_email(f"The Light is on at {now}", is_temp=False, is_light=True)
                 light_email_sent = True
                 print("Email on lighting sent!")
             previous_light_state = "LOW"
@@ -218,6 +279,7 @@ if __name__ == "__main__":
         mqtt_client = mqtt.Client()
         mqtt_client.on_connect = on_connect
         mqtt_client.on_message = on_message
+        mqtt_client.message_callback_add("rfid/tag", on_rfid_tag)
         mqtt_client.connect("localhost", 1883, 60)
         mqtt_client.loop_start()
 
