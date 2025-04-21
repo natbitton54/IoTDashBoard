@@ -1,137 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="../CSS/styles.css">
-    <link rel="stylesheet" href="../CSS/gauge.css">
-    <link rel="stylesheet" href="../CSS/humidityGauge.css"> <!-- Added missing humidityGauge.css -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../CSS/styles.css" />
+    <link rel="stylesheet" href="../CSS/gauge.css" />
+    <link rel="stylesheet" href="../CSS/humidityGauge.css" />
+    <!-- Added missing humidityGauge.css -->
     <title>IoT Smart Home Dashboard</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <!-- Sidebar Navigation -->
     <div class="sidebar">
-        <div class="profile">
-            <div class="pfp">
-                <i class="fa-solid fa-user"></i>
-            </div>
-            <div class="username" id="userName">Username</div>
+      <div class="profile">
+        <div class="pfp">
+          <i class="fa-solid fa-user"></i>
         </div>
-        <h2>IoT Dashboard</h2>
-        <ul>
-            <li>Favourites</li>
-            <li>User Temp Threshold: <span id="userTempThreshold">-</span></li>
-            <li>User Light Threshold: <span id="userLightThreshold">-</span></li>
+        <div class="username" id="userName">Username</div>
+      </div>
+      <h2>IoT Dashboard</h2>
+      <ul>
+        <li>Favourites</li>
+        <li>User Temp Threshold: <span id="userTempThreshold">-</span></li>
+        <li>User Light Threshold: <span id="userLightThreshold">-</span></li>
 
-            <div style="text-align: center; margin-top: 20px;">
-                <button id="themeToggleBtn" class="btn">Toggle Light Mode</button>
-            </div>
-        </ul>
+        <div style="text-align: center; margin-top: 20px">
+          <button id="themeToggleBtn" class="btn">Toggle Light Mode</button>
+        </div>
+      </ul>
     </div>
 
     <!-- Main Content Area -->
     <div class="content">
-        <div class="header">
-            <h1>IoT Smart Home Dashboard</h1>
-        </div>
+      <div class="header">
+        <h1>IoT Smart Home Dashboard</h1>
+      </div>
 
-        <div class="main-container">
-            <!-- Left Section (Temperature, Humidity, and Fan) -->
-            <div class="main-view">
-                <div class="sensor-container">
-                    <!-- Temperature Card -->
-                    <div class="temp-control">
-                        <div class="section-header">
-                            <h5>Temperature Status</h5>
-                        </div>
-                        <div class="thermostat">
-                            <div class="dial-container">
-                                <svg width="250" height="250" viewBox="0 0 250 250" class="gauge-svg">
-                                    <circle cx="125" cy="125" r="100" fill="var(--control-bg-guage)" />
-                                    <circle cx="125" cy="125" r="105" fill="none" stroke="var(--gauge-border)"
-                                        stroke-width="12" />
-                                    <circle cx="125" cy="125" r="105" fill="none" stroke="var(--link-hover-color)"
-                                        stroke-width="12" stroke-dasharray="659.73"
-                                        stroke-dashoffset="calc(659.73 - (659.73 * var(--fill-percentage, 0.01)))"
-                                        class="fill-line" id="fill-line" />
-                                    <text x="125" y="130" text-anchor="middle" font-size="36"
-                                        fill="var(--text-color-gauge)" id="tempDisplay">0.0°C</text>
-                                </svg>
-                                <div class="gauge-ticks"></div>
-                                <div class="gauge-labels"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Humidity Card -->
-                    <div class="humidity-control">
-                        <div class="section-header">
-                            <h5>Humidity Status</h5>
-                        </div>
-                        <div class="humidity-gauge">
-                            <div class="humidity-dial-container">
-                                <svg width="250" height="125" viewBox="0 0 250 125" class="humidity-svg">
-                                    <circle cx="125" cy="125" r="100" fill="var(--control-bg)" />
-                                    <path d="M 25 125 A 100 100 0 0 1 225 125" fill="none" stroke="var(--gauge-border)"
-                                        stroke-width="12" />
-                                    <path d="M 25 125 A 100 100 0 0 1 225 125" fill="none"
-                                        stroke="var(--link-hover-color)" stroke-width="12" stroke-dasharray="314.16"
-                                        stroke-dashoffset="calc(314.16 - (314.16 * var(--humidity-fill-percentage, 0.00)))"
-                                        class="humidity-fill-line" />
-                                    <text x="125" y="100" text-anchor="middle" font-size="36"
-                                        fill="var(--text-color-gauge)" id="humidityDisplay">0.0%</text>
-                                </svg>
-                                <div class="humidity-labels">
-                                    <div class="label">0%</div>
-                                    <div class="label">100%</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Fan Control Card -->
-                    <div class="fan-control">
-                        <div class="section-header">
-                            <h5>Fan Control</h5>
-                        </div>
-                        <div class="bg-image">
-                            <img id="fanGif" src="../src/images/fan-static.gif" alt="Fan Animation"
-                                style="width: 150px; height: auto;">
-                        </div>
-                        <div class="fan-status">
-                            <p class="status">Fan Status: <span id="fanStatus">OFF</span></p>
-                        </div>
-                    </div>
+      <div class="main-container">
+        <!-- Left Section (Temperature, Humidity, and Fan) -->
+        <div class="main-view">
+          <div class="sensor-container">
+            <!-- Temperature Card -->
+            <div class="temp-control">
+              <div class="section-header">
+                <h5>Temperature Status</h5>
+              </div>
+              <div class="thermostat">
+                <div class="dial-container">
+                  <svg
+                    width="250"
+                    height="250"
+                    viewBox="0 0 250 250"
+                    class="gauge-svg"
+                  >
+                    <circle
+                      cx="125"
+                      cy="125"
+                      r="100"
+                      fill="var(--control-bg-guage)"
+                    />
+                    <circle
+                      cx="125"
+                      cy="125"
+                      r="105"
+                      fill="none"
+                      stroke="var(--gauge-border)"
+                      stroke-width="12"
+                    />
+                    <circle
+                      cx="125"
+                      cy="125"
+                      r="105"
+                      fill="none"
+                      stroke="var(--link-hover-color)"
+                      stroke-width="12"
+                      stroke-dasharray="659.73"
+                      stroke-dashoffset="calc(659.73 - (659.73 * var(--fill-percentage, 0.01)))"
+                      class="fill-line"
+                      id="fill-line"
+                    />
+                    <text
+                      x="125"
+                      y="130"
+                      text-anchor="middle"
+                      font-size="36"
+                      fill="var(--text-color-gauge)"
+                      id="tempDisplay"
+                    >
+                      0.0°C
+                    </text>
+                  </svg>
+                  <div class="gauge-ticks"></div>
+                  <div class="gauge-labels"></div>
                 </div>
+              </div>
             </div>
-            <!-- Right Side Lighting and Smart Occupancy System -->
-            <div class="control-panel">
-                <div class="light-control">
-                    <div class="section-header">
-                        <h5>Lighting</h5>
-                    </div>
-                    <canvas id="lightCanvas" width="180" height="300"></canvas>
-                    <div class="light-slider-container">
-                        <i class="fa-solid fa-sun min-icon"></i>
-                        <input type="range" id="lightSlider" class="light-slider" min="0" max="4095" value="0"
-                            style="background: linear-gradient(to right, #aaa 0%, #aaa 100%);" />
-                    </div>
-                    <p id="lightPercentageIntensity" style="margin-top: 10px; font-size: 12px; font-weight: bold;">
-                        <span id="lightValue"></span>
-                    </p>
+            <!-- Humidity Card -->
+            <div class="humidity-control">
+              <div class="section-header">
+                <h5>Humidity Status</h5>
+              </div>
+              <div class="humidity-gauge">
+                <div class="humidity-dial-container">
+                  <svg
+                    width="250"
+                    height="125"
+                    viewBox="0 0 250 125"
+                    class="humidity-svg"
+                  >
+                    <circle
+                      cx="125"
+                      cy="125"
+                      r="100"
+                      fill="var(--control-bg)"
+                    />
+                    <path
+                      d="M 25 125 A 100 100 0 0 1 225 125"
+                      fill="none"
+                      stroke="var(--gauge-border)"
+                      stroke-width="12"
+                    />
+                    <path
+                      d="M 25 125 A 100 100 0 0 1 225 125"
+                      fill="none"
+                      stroke="var(--link-hover-color)"
+                      stroke-width="12"
+                      stroke-dasharray="314.16"
+                      stroke-dashoffset="calc(314.16 - (314.16 * var(--humidity-fill-percentage, 0.00)))"
+                      class="humidity-fill-line"
+                    />
+                    <text
+                      x="125"
+                      y="100"
+                      text-anchor="middle"
+                      font-size="36"
+                      fill="var(--text-color-gauge)"
+                      id="humidityDisplay"
+                    >
+                      0.0%
+                    </text>
+                  </svg>
+                  <div class="humidity-labels">
+                    <div class="label">0%</div>
+                    <div class="label">100%</div>
+                  </div>
                 </div>
-                <div class="phone-control">
-                    <div class="bg-image"></div>
-                    <p>Enter user code</p>
-                    <input type="text" id="qrInput" placeholder="Scan QR code" class="input-box" />
-                    <button class="enter-button" id="qrEnterBtn" onclick="getUserInfo()">Enter</button>
-                </div> 
+              </div>
             </div>
+            <!-- Fan Control Card -->
+            <div class="fan-control">
+              <div class="section-header">
+                <h5>Fan Control</h5>
+              </div>
+              <div class="bg-image">
+                <img
+                  id="fanGif"
+                  src="../src/images/fan-static.gif"
+                  alt="Fan Animation"
+                  style="width: 150px; height: auto"
+                />
+              </div>
+              <div class="fan-status">
+                <p class="status">
+                  Fan Status: <span id="fanStatus">OFF</span>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <!-- Right Side Lighting and Smart Occupancy System -->
+        <div class="control-panel">
+          <div class="light-control">
+            <div class="section-header">
+              <h5>Lighting</h5>
+            </div>
 
+            <!-- Bulb and Status -->
+            <div style="text-align: center" class="img-lightbulb">
+              <img
+                id="lightBulbImg"
+                src="https://www.w3schools.com/js/pic_bulboff.gif"
+                width="100"
+                height="180"
+              />
+              <p
+                id="bulbState"
+                style="color: red; margin-top: 5px; font-weight: bold; margin-bottom: 5px;"
+              >
+                OFF
+              </p>
+            </div>
+
+            <!-- Slider -->
+            <div class="light-slider-container">
+              <i class="fa-solid fa-sun min-icon"></i>
+              <input
+                type="range"
+                id="lightSlider"
+                class="light-slider"
+                min="0"
+                max="4095"
+                value="0"
+                style="
+                  background: linear-gradient(to right, #aaa 0%, #aaa 100%);
+                "
+              />
+            </div>
+
+            <!-- Light value text -->
+            <p
+              id="lightPercentageIntensity"
+              style="font-size: 12px; font-weight: bold"
+            >
+              <span id="lightValue"></span>
+            </p>
+          </div>
+
+          <div class="phone-control">
+            <div class="bg-image"></div>
+            <p>Enter user code</p>
+            <input
+              type="text"
+              id="qrInput"
+              placeholder="Scan QR code"
+              class="input-box"
+            />
+            <button
+              class="enter-button"
+              id="qrEnterBtn"
+              onclick="getUserInfo()"
+            >
+              Enter
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
     <script src="../Scripts/user-info.js"></script>
     <script src="../Scripts/temperature.js"></script>
@@ -142,6 +253,5 @@
     <script src="../Scripts/humidityGauge.js"></script>
     <script src="../Scripts/emailAlert.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</body>
-
+  </body>
 </html>
