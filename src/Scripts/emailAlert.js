@@ -10,14 +10,16 @@ setInterval(() => {
         .then(data => {
             if (data.email_sent && !tempPopupShown) {
                 tempPopupShown = true;
+
+                fetch('/acknowledge-email', { method: 'POST' });
+
                 Swal.fire({
                     title: 'Temperature Alert!',
                     text: 'An email has been sent due to high temperature.',
                     icon: 'info',
                     confirmButtonText: 'OK'
                 }).then(() => {
-                    fetch('/acknowledge-email', { method: 'POST' })
-                        .then(() => { tempPopupShown = false; });
+                    tempPopupShown = false;
                 });
             }
         });

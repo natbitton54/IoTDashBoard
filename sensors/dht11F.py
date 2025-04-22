@@ -2,7 +2,7 @@ import Freenove_DHT as DHT
 import RPi.GPIO as GPIO
 import time
 
-DHTPin = 17  
+DHTPin = 18 
 
 def get_temperature():
     dht = DHT.DHT(DHTPin)

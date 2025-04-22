@@ -37,6 +37,7 @@ email_sent = False
 light_led_state = False
 light_email_sent = False
 previous_light_state = None
+previous_temp_state = "NORMAL"
 light_value = "Waiting for data"
 
 
@@ -89,13 +90,29 @@ def get_fan_status():
 # API endpoints for temperature and humidity
 @app.route("/temperature", methods=["GET"])
 def temperature():
-    global email_sent
+    global email_sent, previous_temp_state
     temp = get_temperature()
+
+    if not current_user:
+        return jsonify({"temperature": temp or "No user scanned"})
+    
     if temp is not None:
-        threshold = current_user.get("temp_threshold", 22)
-        if temp > threshold and not email_sent:
-            send_email(temp, is_temp=True, is_light=False)
-            email_sent = True
+        threshold = current_user.get("temp_threshold", 23)
+        print(f"[TEMP] Temp: {temp}, Threshold: {threshold}, Email sent: {email_sent}")
+
+        if temp > threshold:
+            if previous_temp_state != "HIGH":
+                if not email_sent:    
+                    send_email(temp, is_temp=True, is_light=False)
+                    email_sent = True
+                    print("[TEMP] Email Sent. Flag set to true.")
+                previous_temp_state = "HIGH"
+        else:
+            if previous_temp_state != "NORMAL":
+                email_sent = False
+                previous_temp_state = "NORMAL"
+                print("[TEMP] Temp dropped. Flags reset.")        
+
         return jsonify({"temperature": temp})
     else:
         return jsonify({"error": "Failed to read temperature."}), 500
@@ -131,6 +148,7 @@ def email_status():
 @app.route("/acknowledge-email", methods=["POST"])
 def acknowledge_email():
     global email_sent
+    print("[ACK] Email acknowledged. Resetting email_sent flag to False.")
     email_sent = False
     return jsonify({"status": "acknowledged"})
 
@@ -237,7 +255,7 @@ def on_message(client, userdata, message):
         print("Light Value Invalid!")
         return
 
-    threshold = current_user.get("light_threshold", 400)
+    threshold = current_user.get("light_threshold", 1200)
     if value < threshold:
         if previous_light_state != "LOW":
             if not light_led_state:
