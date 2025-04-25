@@ -5,6 +5,7 @@ from flask import (
     request,
     jsonify,
 )  # use jsonify for returning messages because we are using javascript on our project
+from Bluetooth.bluetooth_scanner import scan_devices
 from sensors.dht11F import get_humidity, get_temperature
 from emails.emailing import send_email, check_response
 from motors.motor import setup_motor, run_motor
@@ -231,6 +232,22 @@ def qrcode():
 @app.route("/user")
 def get_current_user():
     return jsonify(current_user)
+
+
+@app.route("/bluetooth-status", methods=["GET"])
+def bluetooth_status():
+    # Get threshold from query params, default to -50
+    threshold = int(request.args.get("threshold", -50))
+    devices = scan_devices(threshold=threshold)
+    return jsonify(
+        {
+            "device_count": len(devices),
+            "devices": [
+                {"name": name, "address": addr, "rssi": rssi}
+                for addr, name, rssi in devices
+            ],
+        }
+    )
 
 
 # this is the mqtt callback functions

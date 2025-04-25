@@ -193,7 +193,12 @@
               />
               <p
                 id="bulbState"
-                style="color: red; margin-top: 5px; font-weight: bold; margin-bottom: 5px;"
+                style="
+                  color: red;
+                  margin-top: 5px;
+                  font-weight: bold;
+                  margin-bottom: 5px;
+                "
               >
                 OFF
               </p>
@@ -225,21 +230,43 @@
           </div>
 
           <div class="phone-control">
-            <div class="bg-image"></div>
-            <p>Enter user code</p>
-            <input
-              type="text"
-              id="qrInput"
-              placeholder="Scan QR code"
-              class="input-box"
-            />
-            <button
-              class="enter-button"
-              id="qrEnterBtn"
-              onclick="getUserInfo()"
-            >
-              Enter
-            </button>
+            <div class="section-header" style="margin-bottom: 20px">
+              <h5>USER Auth & BLE</h5>
+            </div>
+
+            <div class="container-user-auth">
+              <p>Enter user code</p>
+              <input
+                type="text"
+                id="qrInput"
+                placeholder="Scan QR code"
+                class="input-box"
+              />
+              <button
+                class="enter-button"
+                id="qrEnterBtn"
+                onclick="getUserInfo()"
+                style="margin-bottom: 10px"
+              >
+                Enter
+              </button>
+            </div>
+
+            <hr style="border: 1px solid #ccc" width="100%" />
+
+            <div class="bluetooth-panel">
+              <div class="input-group">
+                <label>Bluetooth devices nearby:</label>
+                <input type="text" id="deviceCount" readonly />
+              </div>
+              <div class="input-group">
+                <label>RSSI Threshold (dBm)</label>
+                <input type="number" id="rssiThreshold" value="-50" />
+              </div>
+              <button id="scanBtn">
+                <i class="fa-brands fa-bluetooth-b"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -252,6 +279,7 @@
     <script src="../Scripts/tempGauge.js"></script>
     <script src="../Scripts/humidityGauge.js"></script>
     <script src="../Scripts/emailAlert.js"></script>
+    <script src="../Scripts/ble.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </body>
 </html>
