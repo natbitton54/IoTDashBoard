@@ -65,30 +65,3 @@ function getUserInfo() {
 }
 
 setInterval(updateUserInfo, 3000);
-
-window.addEventListener("DOMContentLoaded", () => {
-  const savedUID = localStorage.getItem("uid");
-  if (savedUID) {
-    fetch("/qrcode", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ uid: savedUID }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          console.log("Auto-login with stored UID");
-          updateUserInfo();
-        } else {
-          console.warn("Stored UID invalid. Clearing localStorage.");
-          localStorage.removeItem("uid");
-        }
-      })
-      .catch((err) => {
-        console.warn("Auto-login failed.");
-        console.error(err);
-      });
-  }
-});
