@@ -52,6 +52,7 @@ function getUserInfo() {
           console.log("QR Code success.");
           localStorage.setItem("uid", qrCode);
           updateUserInfo();
+          document.getElementById("qrInput").value = "";
         } else {
           alert("User not found.");
         }

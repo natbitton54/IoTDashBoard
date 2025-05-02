@@ -1,29 +1,35 @@
-import bluetooth
-import subprocess
+import asyncio
+from bleak import BleakScanner
 
 
-def scan_devices(threshold=-50, duration=8):
-    print("Scanning for Bluetooth devices...")
-    result = subprocess.run(
-        ["hcitool", "scan"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL
-    )
+async def scan_ble_async(threshold=-90):
+    print("[BLE] Scanning for BLE devices (MAC only)...")
 
-    nearby_devices = bluetooth.discover_devices(
-        duration=duration, lookup_names=True, flush_cache=True
-    )
+    devices = await BleakScanner.discover(timeout=5.0)
     filtered_devices = []
 
-    for addr, name in nearby_devices:
-        try:
-            rssi_output = subprocess.check_output(
-                ["hcitool", "rssi", addr], stderr=subprocess.DEVNULL
-            ).decode()
-            rssi = int(rssi_output.strip().split()[-1])
-            print(f"{name} ({addr}) - RSSI: {rssi} dBm")  # for debugging
-            if rssi >= threshold:
-                filtered_devices.append((addr, name, rssi))
-        except Exception as e:
-            print(f"Error reading RSSI for {addr}: {e}")
-            continue
+    for device in devices:
+        rssi = device.rssi
+        address = device.address.upper()
+
+        print(f"[BLE] {address} - RSSI: {rssi} dBm")
+
+        if rssi >= threshold:
+            filtered_devices.append(
+                {
+                    "address": address,
+                    "name": address,  # Use MAC as 'name'
+                    "rssi": rssi,
+                    "type": "BLE",
+                }
+            )
 
     return filtered_devices
+
+
+def scan_ble(threshold=-90):
+    try:
+        return asyncio.run(scan_ble_async(threshold))
+    except Exception as e:
+        print(f"[BLE] Scan failed: {e}")
+        return []

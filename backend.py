@@ -5,7 +5,7 @@ from flask import (
     request,
     jsonify,
 )  # use jsonify for returning messages because we are using javascript on our project
-from Bluetooth.bluetooth_scanner import scan_devices
+from Bluetooth.bluetooth_scanner import scan_ble
 from sensors.dht11F import get_humidity, get_temperature
 from emails.emailing import send_email, check_response
 from motors.motor import setup_motor, run_motor
@@ -96,14 +96,14 @@ def temperature():
 
     if not current_user:
         return jsonify({"temperature": temp or "No user scanned"})
-    
+
     if temp is not None:
         threshold = current_user.get("temp_threshold", 23)
         print(f"[TEMP] Temp: {temp}, Threshold: {threshold}, Email sent: {email_sent}")
 
         if temp > threshold:
             if previous_temp_state != "HIGH":
-                if not email_sent:    
+                if not email_sent:
                     send_email(temp, is_temp=True, is_light=False)
                     email_sent = True
                     print("[TEMP] Email Sent. Flag set to true.")
@@ -112,7 +112,7 @@ def temperature():
             if previous_temp_state != "NORMAL":
                 email_sent = False
                 previous_temp_state = "NORMAL"
-                print("[TEMP] Temp dropped. Flags reset.")        
+                print("[TEMP] Temp dropped. Flags reset.")
 
         return jsonify({"temperature": temp})
     else:
@@ -236,18 +236,25 @@ def get_current_user():
 
 @app.route("/bluetooth-status", methods=["GET"])
 def bluetooth_status():
-    # Get threshold from query params, default to -50
+    print("[BLE] /bluetooth-status endpoint hit")
     threshold = int(request.args.get("threshold", -50))
-    devices = scan_devices(threshold=threshold)
-    return jsonify(
-        {
-            "device_count": len(devices),
-            "devices": [
-                {"name": name, "address": addr, "rssi": rssi}
-                for addr, name, rssi in devices
-            ],
-        }
-    )
+
+    try:
+        devices = scan_ble(threshold)  # Now returns list of dicts
+
+        return jsonify({"device_count": len(devices), "devices": devices})
+    except Exception as e:
+        print(f"[BLE] Error: {e}")
+        return (
+            jsonify(
+                {
+                    "device_count": 0,
+                    "devices": [],
+                    "error": "Failed to scan BLE devices",
+                }
+            ),
+            500,
+        )
 
 
 # this is the mqtt callback functions
