@@ -104,6 +104,10 @@ sudo systemctl status bluetooth
 python3 -m pip install bleak --break-system-packages
 sudo apt install python3-bluez
 ```
+In order to run the bluetooth on the Dashboard, run this command in VSCode Terminal
+```bash
+sudo python3 backend.py
+```
 
 ---
 
