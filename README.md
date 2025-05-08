@@ -1,31 +1,114 @@
-# IoTDashBoard
-IoT Course Final Project
+# IoTDashBoard – Final Project User Guide
 
-This project is using the flask framework so the need to install flask in rpi is a must
+## Overview
+This project is a Flask-based Smart Home Dashboard built for an IoT course. It connects various sensors and devices such as LEDs, DHT11, Photoresistor, DC motor (fan), and RFID with an ESP32 and Raspberry Pi using MQTT (Mosquitto) and SQLite.
 
-to install flask:
+---
 
-1. Open your terminal
-2. run the command: sudo apt install python3-flask
+## PHASE 1: Flask Backend + Dashboard
 
-This is if you don't have flask on your RPi but most likely, you already have it.
-----------------------------------------------------------------------------------------
-How to run this project
+### Flask Installation (if not pre-installed):
+```bash
+sudo apt install python3-flask
+```
 
-to run:
+### Running the Project:
+1. Open your IDE (e.g., VS Code).
+2. Run the Flask backend script.
+3. Open your browser and go to:  
+   `http://127.0.0.1:5000`  
+   - `127.0.0.1` = Localhost  
+   - `5000` = Default Flask port
 
-1. Press run on VS Code or whatever IDE you're using.
-2. On your browser, go to http://127.0.0.1:5000.
+### GPIO Fix (if errors occur):
+```bash
+sudo apt install python3-rpi.gpio
+```
 
-http://127.0.0.1:5000 is the local development server URL of flask where:
-127.0.0.1 is the localhost
-5000 is the default port
-----------------------------------------------------------------------------------------
-In some part of trying to run the code, you might encounter an error on your gpio.
+---
 
-to fix this:
+## PHASE 2: Temperature & Email Alerts
 
-1. Open your terminal
-2. run the command: sudo apt install python3-rpi.gpio
+### Setup DHT11 Library:
+1. Download from: https://freenove.com/FNK0025  
+2. Extract the zip file.
+3. Navigate to `Libs > Python-Libs`.
+4. Copy the `Freenove_DHT` folder into your project.
 
-This probably means that you don't have the required version of gpio.
+### Emailing Setup (Install via Terminal):
+```bash
+sudo apt install python3-smtplib
+sudo apt install python3-imaplib
+# or alternatively
+sudo apt install python3-secure-smtplib
+```
+
+---
+
+## PHASE 3: Light Sensor, MQTT, and Arduino
+
+### Install Mosquitto MQTT Broker:
+```bash
+sudo apt update
+sudo apt install -y mosquitto mosquitto-clients
+sudo systemctl enable mosquitto.service
+mosquitto -v  # To test the broker
+```
+
+### Arduino Setup on Raspberry Pi:
+```bash
+sudo apt-get install fuse libfuse-dev
+```
+
+1. Download Arduino IDE for Pi:  
+   [GitHub Release - Linux_arm64_app_image.zip](https://github.com/koendv/arduino-ide-raspberrypi/releases/)
+
+2. Unzip using:
+```bash
+unzip filename.zip
+```
+
+### Required Arduino Libraries:
+- `WiFi.h`
+- `PubSubClient.h` (by Nick O'Leary)
+
+### Install Python MQTT Client:
+```bash
+sudo apt install python3-paho-mqtt
+```
+
+---
+
+## PHASE 4: RFID + Database Integration
+
+### Install SQLite (if needed):
+```bash
+sudo apt install sqlite3
+```
+
+### Arduino Library for RFID:
+Install `MFRC522` by GithubCommunity from Library Manager in Arduino IDE.
+
+---
+
+### Bluetooth Setup (for RFID scan detection using BLE or future Bluetooth capabilities):
+Run these commands on the Raspberry Pi terminal to install and activate Bluetooth services:
+```bash
+sudo apt install -y bluetooth bluez
+sudo systemctl enable bluetooth
+sudo systemctl start bluetooth
+sudo systemctl status bluetooth
+```
+
+```bash
+python3 -m pip install bleak --break-system-packages
+sudo apt install python3-bluez
+```
+
+---
+
+## Summary
+Ensure the following are installed and configured:
+- Python: Flask, RPi.GPIO, smtplib, imaplib, sqlite3, paho-mqtt
+- Arduino: ESP32 board support, WiFi, PubSubClient, MFRC522 libraries
+- Raspberry Pi: Mosquitto broker, Freenove DHT11 library
