@@ -34,6 +34,7 @@ sudo apt install python3-rpi.gpio
 2. Extract the zip file.
 3. Navigate to `Libs > Python-Libs`.
 4. Copy the `Freenove_DHT` folder into your project.
+5. run this command to install the library: sudo python setup.py
 
 ### Emailing Setup (Install via Terminal):
 ```bash
